@@ -150,3 +150,34 @@ The available delay options are
  - **.Delay(seconds: NSTimeInterval)** delay specific period of time
  - **.Never** delay forever, the response will never be returned
  - **.None** no delay, i.e. the response will be returned immediately
+
+## DataReader
+
+To reas POST body or any other HTTP body from the request, you need to use `swsgi.input` function provided in the `environ` parameter of SWSGI. For example, you can do
+
+```Swift
+router["/api/v2/users"] = JSONResponse() { environ -> AnyObject in
+    let input = environ["swsgi.input"] as! SWSGIInput
+    input { data in
+        // handle the data stream here
+    }
+}
+```
+
+It's not too hard to do so, however, the data comes in as stream, like
+
+- "first chunk"
+- "second chunk"
+- ....
+- "" (empty data array indicates EOF)
+
+In most cases, you won't like to handle the data stream manually. To wait all data received and process them at once, you can use `DataReader`. For instance
+
+```Swift
+router["/api/v2/users"] = JSONResponse() { environ -> AnyObject in
+    let input = environ["swsgi.input"] as! SWSGIInput
+    DataReader.read { data in
+        // handle the whole data here
+    }
+}
+```
