@@ -27,7 +27,7 @@ class URLParametersReaderTests: XCTestCase {
 
     func testURLParameterReader() {
         let input = { (handler: ([UInt8] -> Void)?) in
-            handler!(Array("foo ".utf8))
+            handler!(Array("foo".utf8))
             handler!(Array("=".utf8))
             handler!(Array("bar".utf8))
             handler!(Array("&eggs=spam".utf8))
