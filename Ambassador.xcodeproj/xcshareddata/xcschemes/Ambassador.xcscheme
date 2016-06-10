@@ -15,8 +15,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "D8346A491D0B5FB200717A7D"
-               BuildableName = "Ambassador-iOS.framework"
-               BlueprintName = "Ambassador-iOS"
+               BuildableName = "Ambassador.framework"
+               BlueprintName = "Ambassador"
                ReferencedContainer = "container:Ambassador.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -43,8 +43,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "D8346A491D0B5FB200717A7D"
-            BuildableName = "Ambassador-iOS.framework"
-            BlueprintName = "Ambassador-iOS"
+            BuildableName = "Ambassador.framework"
+            BlueprintName = "Ambassador"
             ReferencedContainer = "container:Ambassador.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -65,8 +65,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "D8346A491D0B5FB200717A7D"
-            BuildableName = "Ambassador-iOS.framework"
-            BlueprintName = "Ambassador-iOS"
+            BuildableName = "Ambassador.framework"
+            BlueprintName = "Ambassador"
             ReferencedContainer = "container:Ambassador.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -83,8 +83,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "D8346A491D0B5FB200717A7D"
-            BuildableName = "Ambassador-iOS.framework"
-            BlueprintName = "Ambassador-iOS"
+            BuildableName = "Ambassador.framework"
+            BlueprintName = "Ambassador"
             ReferencedContainer = "container:Ambassador.xcodeproj">
          </BuildableReference>
       </MacroExpansion>

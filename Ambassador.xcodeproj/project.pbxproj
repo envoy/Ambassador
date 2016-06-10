@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		D8346A4E1D0B5FB300717A7D /* Ambassador.h in Headers */ = {isa = PBXBuildFile; fileRef = D8346A4D1D0B5FB300717A7D /* Ambassador.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		D8346A551D0B5FB300717A7D /* Ambassador-iOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D8346A4A1D0B5FB200717A7D /* Ambassador-iOS.framework */; };
+		D8346A551D0B5FB300717A7D /* Ambassador.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D8346A4A1D0B5FB200717A7D /* Ambassador.framework */; };
 		D8346A5A1D0B5FB300717A7D /* DataResponseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8346A591D0B5FB300717A7D /* DataResponseTests.swift */; };
 		D8346A661D0B616C00717A7D /* DataResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8346A651D0B616C00717A7D /* DataResponse.swift */; };
 		D8346A681D0B619C00717A7D /* WebAppType.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8346A671D0B619C00717A7D /* WebAppType.swift */; };
@@ -19,6 +19,7 @@
 		D8346A731D0B636300717A7D /* Router.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8346A721D0B636300717A7D /* Router.swift */; };
 		D8346A7E1D0B674F00717A7D /* Embassy.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D8346A7D1D0B674F00717A7D /* Embassy.framework */; };
 		D8346A831D0B6DC800717A7D /* JSONResponseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8346A821D0B6DC800717A7D /* JSONResponseTests.swift */; };
+		D8346A851D0B728300717A7D /* DataReaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8346A841D0B728300717A7D /* DataReaderTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -32,7 +33,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		D8346A4A1D0B5FB200717A7D /* Ambassador-iOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = "Ambassador-iOS.framework"; sourceTree = BUILT_PRODUCTS_DIR; };
+		D8346A4A1D0B5FB200717A7D /* Ambassador.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Ambassador.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D8346A4D1D0B5FB300717A7D /* Ambassador.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Ambassador.h; sourceTree = "<group>"; };
 		D8346A4F1D0B5FB300717A7D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D8346A541D0B5FB300717A7D /* AmbassadorTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AmbassadorTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -47,6 +48,7 @@
 		D8346A721D0B636300717A7D /* Router.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Router.swift; sourceTree = "<group>"; };
 		D8346A7D1D0B674F00717A7D /* Embassy.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Embassy.framework; path = "Carthage/Checkouts/Embassy/build/Debug-iphoneos/Embassy.framework"; sourceTree = "<group>"; };
 		D8346A821D0B6DC800717A7D /* JSONResponseTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSONResponseTests.swift; sourceTree = "<group>"; };
+		D8346A841D0B728300717A7D /* DataReaderTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataReaderTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -62,7 +64,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D8346A551D0B5FB300717A7D /* Ambassador-iOS.framework in Frameworks */,
+				D8346A551D0B5FB300717A7D /* Ambassador.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -82,7 +84,7 @@
 		D8346A4B1D0B5FB200717A7D /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				D8346A4A1D0B5FB200717A7D /* Ambassador-iOS.framework */,
+				D8346A4A1D0B5FB200717A7D /* Ambassador.framework */,
 				D8346A541D0B5FB300717A7D /* AmbassadorTests.xctest */,
 			);
 			name = Products;
@@ -106,6 +108,7 @@
 			children = (
 				D8346A591D0B5FB300717A7D /* DataResponseTests.swift */,
 				D8346A821D0B6DC800717A7D /* JSONResponseTests.swift */,
+				D8346A841D0B728300717A7D /* DataReaderTests.swift */,
 				D8346A5B1D0B5FB300717A7D /* Info.plist */,
 			);
 			path = AmbassadorTests;
@@ -152,9 +155,9 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		D8346A491D0B5FB200717A7D /* Ambassador-iOS */ = {
+		D8346A491D0B5FB200717A7D /* Ambassador */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = D8346A5E1D0B5FB300717A7D /* Build configuration list for PBXNativeTarget "Ambassador-iOS" */;
+			buildConfigurationList = D8346A5E1D0B5FB300717A7D /* Build configuration list for PBXNativeTarget "Ambassador" */;
 			buildPhases = (
 				D8346A451D0B5FB200717A7D /* Sources */,
 				D8346A461D0B5FB200717A7D /* Frameworks */,
@@ -165,9 +168,9 @@
 			);
 			dependencies = (
 			);
-			name = "Ambassador-iOS";
+			name = Ambassador;
 			productName = Ambassador;
-			productReference = D8346A4A1D0B5FB200717A7D /* Ambassador-iOS.framework */;
+			productReference = D8346A4A1D0B5FB200717A7D /* Ambassador.framework */;
 			productType = "com.apple.product-type.framework";
 		};
 		D8346A531D0B5FB300717A7D /* AmbassadorTests */ = {
@@ -218,7 +221,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				D8346A491D0B5FB200717A7D /* Ambassador-iOS */,
+				D8346A491D0B5FB200717A7D /* Ambassador */,
 				D8346A531D0B5FB300717A7D /* AmbassadorTests */,
 			);
 		};
@@ -260,6 +263,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D8346A851D0B728300717A7D /* DataReaderTests.swift in Sources */,
 				D8346A831D0B6DC800717A7D /* JSONResponseTests.swift in Sources */,
 				D8346A5A1D0B5FB300717A7D /* DataResponseTests.swift in Sources */,
 			);
@@ -270,7 +274,7 @@
 /* Begin PBXTargetDependency section */
 		D8346A571D0B5FB300717A7D /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = D8346A491D0B5FB200717A7D /* Ambassador-iOS */;
+			target = D8346A491D0B5FB200717A7D /* Ambassador */;
 			targetProxy = D8346A561D0B5FB300717A7D /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -442,7 +446,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		D8346A5E1D0B5FB300717A7D /* Build configuration list for PBXNativeTarget "Ambassador-iOS" */ = {
+		D8346A5E1D0B5FB300717A7D /* Build configuration list for PBXNativeTarget "Ambassador" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				D8346A5F1D0B5FB300717A7D /* Debug */,
