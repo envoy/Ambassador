@@ -11,15 +11,31 @@ import Foundation
 /// Router WebApp for routing requests to different WebApp
 public class Router: WebAppType {
     var routes: [String: WebAppType] = [:]
-    var notFoundResponse: WebAppType = DataResponse(statusCode: 404, statusMessage: "Not found")
+    public var notFoundResponse: WebAppType = DataResponse(
+        statusCode: 404,
+        statusMessage: "Not found"
+    )
+    private let semaphore = dispatch_semaphore_create(1)
+
+    public init() {
+    }
 
     public subscript(path: String) -> WebAppType? {
         get {
+            // enter critical section
+            dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER)
+            defer {
+                dispatch_semaphore_signal(semaphore)
+            }
             return routes[path]
         }
 
         set {
-            // TODO: lock routers dict here, make it thread-safe
+            // enter critical section
+            dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER)
+            defer {
+                dispatch_semaphore_signal(semaphore)
+            }
             routes[path] = newValue!
         }
     }

@@ -22,6 +22,7 @@
 		D8346A851D0B728300717A7D /* DataReaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8346A841D0B728300717A7D /* DataReaderTests.swift */; };
 		D8346A871D0B73B800717A7D /* JSONReaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8346A861D0B73B800717A7D /* JSONReaderTests.swift */; };
 		D8346A891D0B745A00717A7D /* URLParametersReaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8346A881D0B745A00717A7D /* URLParametersReaderTests.swift */; };
+		D8346A8B1D0B777700717A7D /* RouterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8346A8A1D0B777700717A7D /* RouterTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -53,6 +54,7 @@
 		D8346A841D0B728300717A7D /* DataReaderTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataReaderTests.swift; sourceTree = "<group>"; };
 		D8346A861D0B73B800717A7D /* JSONReaderTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSONReaderTests.swift; sourceTree = "<group>"; };
 		D8346A881D0B745A00717A7D /* URLParametersReaderTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = URLParametersReaderTests.swift; sourceTree = "<group>"; };
+		D8346A8A1D0B777700717A7D /* RouterTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RouterTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -115,6 +117,7 @@
 				D8346A841D0B728300717A7D /* DataReaderTests.swift */,
 				D8346A861D0B73B800717A7D /* JSONReaderTests.swift */,
 				D8346A881D0B745A00717A7D /* URLParametersReaderTests.swift */,
+				D8346A8A1D0B777700717A7D /* RouterTests.swift */,
 				D8346A5B1D0B5FB300717A7D /* Info.plist */,
 			);
 			path = AmbassadorTests;
@@ -273,6 +276,7 @@
 				D8346A891D0B745A00717A7D /* URLParametersReaderTests.swift in Sources */,
 				D8346A851D0B728300717A7D /* DataReaderTests.swift in Sources */,
 				D8346A831D0B6DC800717A7D /* JSONResponseTests.swift in Sources */,
+				D8346A8B1D0B777700717A7D /* RouterTests.swift in Sources */,
 				D8346A5A1D0B5FB300717A7D /* DataResponseTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

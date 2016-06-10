@@ -73,9 +73,11 @@ public struct DataResponse: WebAppType {
             if headerDict["Content-Length"] == nil {
                 headers.append(("Content-Length", String(data.count)))
             }
-            
+
             startResponse("\(self.statusCode) \(self.statusMessage)", headers)
-            sendBody(data)
+            if !data.isEmpty {
+                sendBody(data)
+            }
             sendBody([])
         }
     }

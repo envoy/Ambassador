@@ -66,4 +66,29 @@ class DataResponseTests: XCTestCase {
             XCTAssertEqual(receivedEnviron?[key] as? String, value as? String)
         }
     }
+
+    func testDataResponseWithEmptyData() {
+        let dataResponse = DataResponse()
+
+        let startResponse = { (status: String, headers: [(String, String)]) in
+        }
+        var receivedData: [[UInt8]] = []
+        let sendBody = { (data: [UInt8]) in
+            receivedData.append(data)
+        }
+
+        let environ: [String: Any] = [
+            "REQUEST_METHOD": "GET",
+            "SCRIPT_NAME": "",
+            "PATH_INFO": "/",
+        ]
+        dataResponse.app(
+            environ,
+            startResponse: startResponse,
+            sendBody: sendBody
+        )
+
+        XCTAssertEqual(receivedData.count, 1)
+        XCTAssertEqual(receivedData.first?.count, 0)
+    }
 }
