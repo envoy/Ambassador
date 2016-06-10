@@ -30,7 +30,7 @@ public struct DataResponse: WebAppType {
         contentType: String = "application/octet-stream",
         headers: [(String, String)] = [],
         handler: (environ: [String: Any], sendData: [UInt8] -> Void) -> Void
-        ) {
+    ) {
         self.statusCode = statusCode
         self.statusMessage = statusMessage
         self.contentType = contentType

@@ -11,23 +11,23 @@ import Foundation
 import Embassy
 
 /// A response app makes another app to delay its response for a specific time period
-struct DelayResponse: WebAppType {
-    enum Delay {
+public struct DelayResponse: WebAppType {
+    public enum Delay {
         case Random(min: NSTimeInterval, max: NSTimeInterval)
         case Delay(seconds: NSTimeInterval)
         case Never
         case None
     }
 
-    var delay: Delay
-    let delayedApp: WebAppType
+    public let delay: Delay
+    public let delayedApp: WebAppType
 
-    init(_ app: WebAppType, delay: Delay = .Random(min: 0.1, max: 3)) {
+    public init(_ app: WebAppType, delay: Delay = .Random(min: 0.1, max: 3)) {
         delayedApp = app
         self.delay = delay
     }
 
-    func app(
+    public func app(
         environ: [String: Any],
         startResponse: ((String, [(String, String)]) -> Void),
         sendBody: ([UInt8] -> Void)
