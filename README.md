@@ -106,3 +106,16 @@ router["/api/v2/xml"] = DataResponse(
 ```
 
 Please notice, unlike `sendBody` for SWSGI, `sendData` only expects to be called once with the whole chunk of data.
+
+## JSONResponse
+
+Almost identical to `DataResponse`, except it takes `AnyObject` instead of bytes and dump the object as JSON format and response it for you. For example:
+
+```Swift
+router["/api/v2/users"] = JSONResponse() { _ -> AnyObject in
+    return [
+        ["id": "01", "name": "john"],
+        ["id": "02", "name": "tom"]
+    ]
+}
+```
