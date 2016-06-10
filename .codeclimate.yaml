@@ -1,0 +1,16 @@
+---
+engines:
+  tailor:
+    enabled: true
+    checks:
+      forced-type-cast:
+        enabled: false
+      function-whitespace:
+        enabled: false
+ratings:
+  paths:
+  - "**.swift"
+exclude_paths:
+  - Carthage
+  - Pods
+  - fastlane
