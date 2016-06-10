@@ -119,3 +119,34 @@ router["/api/v2/users"] = JSONResponse() { _ -> AnyObject in
     ]
 }
 ```
+
+## DelayResponse
+
+`DelayResponse` is a **decorator** response that delays given response for a while. In real-world, there will always be network latency, to simulte the latency, `DelayResponse` is very helpful. To delay a response, just do
+
+```Swift
+router["/api/v2/users"] = DelayResponse(JSONResponse(handler: { _ -> AnyObject in
+    return [
+        ["id": "01", "name": "john"],
+        ["id": "02", "name": "tom"]
+    ]
+}))
+```
+
+By default, it delays the response randomly. You can modify it by passing `delay` parameter. Like, say if you want to delay it for 10 seconds, then here you do
+
+```Swift
+router["/api/v2/users"] = DelayResponse(JSONResponse(handler: { _ -> AnyObject in
+    return [
+        ["id": "01", "name": "john"],
+        ["id": "02", "name": "tom"]
+    ]
+}), delay: .Delay(10))
+```
+
+The available delay options are
+
+ - **.Random(min: NSTimeInterval, max: NSTimeInterval)** delay random, it's also the default one as .Random(min: 0.1, max: 3)
+ - **.Delay(seconds: NSTimeInterval)** delay specific period of time
+ - **.Never** delay forever, the response will never be returned
+ - **.None** no delay, i.e. the response will be returned immediately
