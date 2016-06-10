@@ -4,4 +4,7 @@
    <FileRef
       location = "container:Ambassador.xcodeproj">
    </FileRef>
+   <FileRef
+      location = "group:Carthage/Checkouts/Embassy/Embassy.xcodeproj">
+   </FileRef>
 </Workspace>
