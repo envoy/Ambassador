@@ -181,3 +181,35 @@ router["/api/v2/users"] = JSONResponse() { environ -> AnyObject in
     }
 }
 ```
+
+## JSONReader
+
+Like `DataReader`, besides reading the whole chunk of data, `JSONReader` also parse it as JSON format. Herer's how you do
+
+```Swift
+router["/api/v2/users"] = JSONResponse() { environ -> AnyObject in
+    let input = environ["swsgi.input"] as! SWSGIInput
+    JSONReader.read { json in
+        // handle the json object here
+    }
+}
+```
+
+## URLParametersReader
+
+`URLParametersReader` wait all data to be received and parse them all at once as URL encoding parameters, like `foo=bar&eggs=spam`. The parameters will be passed as an array key value pairs as `(String, String)`.
+
+```Swift
+router["/api/v2/users"] = URLParametersReader() { environ -> AnyObject in
+    let input = environ["swsgi.input"] as! SWSGIInput
+    JSONReader.read { params in
+        // handle the params object here
+    }
+}
+```
+
+You can also use `URLParametersReader.parseURLParameters` to parse the URL encoded parameter string if you want. Just do it like
+
+```Swift
+let params = URLParametersReader.parseURLParameters("foo=bar&eggs=spam")
+```
