@@ -18,6 +18,7 @@
 		D8346A711D0B633700717A7D /* JSONResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8346A701D0B633700717A7D /* JSONResponse.swift */; };
 		D8346A731D0B636300717A7D /* Router.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8346A721D0B636300717A7D /* Router.swift */; };
 		D8346A7E1D0B674F00717A7D /* Embassy.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D8346A7D1D0B674F00717A7D /* Embassy.framework */; };
+		D8346A831D0B6DC800717A7D /* JSONResponseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8346A821D0B6DC800717A7D /* JSONResponseTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -45,6 +46,7 @@
 		D8346A701D0B633700717A7D /* JSONResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSONResponse.swift; sourceTree = "<group>"; };
 		D8346A721D0B636300717A7D /* Router.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Router.swift; sourceTree = "<group>"; };
 		D8346A7D1D0B674F00717A7D /* Embassy.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Embassy.framework; path = "Carthage/Checkouts/Embassy/build/Debug-iphoneos/Embassy.framework"; sourceTree = "<group>"; };
+		D8346A821D0B6DC800717A7D /* JSONResponseTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSONResponseTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -103,6 +105,7 @@
 			isa = PBXGroup;
 			children = (
 				D8346A591D0B5FB300717A7D /* DataResponseTests.swift */,
+				D8346A821D0B6DC800717A7D /* JSONResponseTests.swift */,
 				D8346A5B1D0B5FB300717A7D /* Info.plist */,
 			);
 			path = AmbassadorTests;
@@ -257,6 +260,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D8346A831D0B6DC800717A7D /* JSONResponseTests.swift in Sources */,
 				D8346A5A1D0B5FB300717A7D /* DataResponseTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -1,5 +1,5 @@
 //
-//  DataResponseTests.swift
+//  JSONResponseTests.swift
 //  Ambassador
 //
 //  Created by Fang-Pen Lin on 6/10/16.
@@ -11,19 +11,10 @@ import XCTest
 import Embassy
 import Ambassador
 
-class DataResponseTests: XCTestCase {
-    func testDataResponse() {
-        var receivedEnviron: [String: Any]?
-        let dataResponse = DataResponse(
-            statusCode: 201,
-            statusMessage: "created",
-            contentType: "application/my-format",
-            headers: [
-                ("X-Foo-Bar", "header")
-            ]
-        ) { (environ) -> [UInt8] in
-            receivedEnviron = environ
-            return Array("hello".utf8)
+class JSONResponseTests: XCTestCase {
+    func testJSONResponse() {
+        let dataResponse = JSONResponse() { (environ) -> AnyObject in
+            return ["foo", "bar"]
         }
 
         var receivedStatus: String?
@@ -42,28 +33,27 @@ class DataResponseTests: XCTestCase {
             "REQUEST_METHOD": "GET",
             "SCRIPT_NAME": "",
             "PATH_INFO": "/",
-        ]
+            ]
         dataResponse.app(
             environ,
             startResponse: startResponse,
             sendBody: sendBody
         )
 
-        XCTAssertEqual(receivedStatus, "201 created")
+        XCTAssertEqual(receivedStatus, "200 OK")
         let headersDict = MultiDictionary<String, String, LowercaseKeyTransform>(
             items: receivedHeaders ?? []
         )
-        XCTAssertEqual(headersDict["Content-Type"], "application/my-format")
-        XCTAssertEqual(Int(headersDict["Content-Length"] ?? "0"), "hello".characters.count)
-        XCTAssertEqual(headersDict["X-Foo-Bar"], "header")
+        XCTAssertEqual(headersDict["Content-Type"], "application/json")
 
         XCTAssertEqual(receivedData.count, 2)
-        XCTAssertEqual(receivedData.first ?? [], Array("hello".utf8))
         XCTAssertEqual(receivedData.last?.count, 0)
-
-        XCTAssertEqual(receivedEnviron?.count, environ.count)
-        for (key, value) in environ {
-            XCTAssertEqual(receivedEnviron?[key] as? String, value as? String)
-        }
+        let bytes = receivedData.first ?? []
+        let parsedJSON: [String] = try! NSJSONSerialization.JSONObjectWithData(
+            NSData(bytes: bytes, length: bytes.count),
+            options: .AllowFragments
+        ) as? [String] ?? []
+        XCTAssertEqual(parsedJSON, ["foo", "bar"])
     }
+
 }

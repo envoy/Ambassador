@@ -11,18 +11,18 @@ import Foundation
 import Embassy
 
 /// A response app for responding JSON data
-struct JSONResponse: WebAppType {
+public struct JSONResponse: WebAppType {
     /// Underlying data response
-    var dataResponse: DataResponse
+    let dataResponse: DataResponse
 
-    init(
+    public init(
         statusCode: Int = 200,
         statusMessage: String = "OK",
         contentType: String = "application/json",
         jsonWritingOptions: NSJSONWritingOptions = .PrettyPrinted,
         headers: [(String, String)] = [],
         handler: (environ: [String: Any], sendJSON: AnyObject -> Void) -> Void
-        ) {
+    ) {
         dataResponse = DataResponse(
             statusCode: statusCode,
             statusMessage: statusMessage,
@@ -40,14 +40,14 @@ struct JSONResponse: WebAppType {
         }
     }
 
-    init(
+    public init(
         statusCode: Int = 200,
         statusMessage: String = "OK",
         contentType: String = "application/json",
         jsonWritingOptions: NSJSONWritingOptions = .PrettyPrinted,
         headers: [(String, String)] = [],
         handler: ((environ: [String: Any]) -> AnyObject)? = nil
-        ) {
+    ) {
         dataResponse = DataResponse(
             statusCode: statusCode,
             statusMessage: statusMessage,
@@ -68,12 +68,12 @@ struct JSONResponse: WebAppType {
             sendData(bytes)
         }
     }
-    
-    func app(
+
+    public func app(
         environ: [String: Any],
         startResponse: ((String, [(String, String)]) -> Void),
         sendBody: ([UInt8] -> Void)
-        ) {
+    ) {
         return dataResponse.app(environ, startResponse: startResponse, sendBody: sendBody)
     }
 }
