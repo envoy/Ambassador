@@ -213,3 +213,17 @@ You can also use `URLParametersReader.parseURLParameters` to parse the URL encod
 ```Swift
 let params = URLParametersReader.parseURLParameters("foo=bar&eggs=spam")
 ```
+
+## Install
+
+### CocoaPods
+
+To install with CocoaPod, add Embassy to your Podfile:
+
+```
+pod 'EnvoyAmbassador', '~> 0.0.1-alpha-1'
+```
+
+### Carthage
+
+To be done
