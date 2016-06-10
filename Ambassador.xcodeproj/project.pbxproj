@@ -23,6 +23,7 @@
 		D8346A871D0B73B800717A7D /* JSONReaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8346A861D0B73B800717A7D /* JSONReaderTests.swift */; };
 		D8346A891D0B745A00717A7D /* URLParametersReaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8346A881D0B745A00717A7D /* URLParametersReaderTests.swift */; };
 		D8346A8B1D0B777700717A7D /* RouterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8346A8A1D0B777700717A7D /* RouterTests.swift */; };
+		D8346A8D1D0B7A4600717A7D /* DelayResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8346A8C1D0B7A4600717A7D /* DelayResponse.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -55,6 +56,7 @@
 		D8346A861D0B73B800717A7D /* JSONReaderTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSONReaderTests.swift; sourceTree = "<group>"; };
 		D8346A881D0B745A00717A7D /* URLParametersReaderTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = URLParametersReaderTests.swift; sourceTree = "<group>"; };
 		D8346A8A1D0B777700717A7D /* RouterTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RouterTests.swift; sourceTree = "<group>"; };
+		D8346A8C1D0B7A4600717A7D /* DelayResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DelayResponse.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -128,6 +130,7 @@
 			children = (
 				D8346A651D0B616C00717A7D /* DataResponse.swift */,
 				D8346A701D0B633700717A7D /* JSONResponse.swift */,
+				D8346A8C1D0B7A4600717A7D /* DelayResponse.swift */,
 			);
 			path = Responses;
 			sourceTree = "<group>";
@@ -262,6 +265,7 @@
 				D8346A681D0B619C00717A7D /* WebAppType.swift in Sources */,
 				D8346A6F1D0B62F300717A7D /* JSONReader.swift in Sources */,
 				D8346A731D0B636300717A7D /* Router.swift in Sources */,
+				D8346A8D1D0B7A4600717A7D /* DelayResponse.swift in Sources */,
 				D8346A6B1D0B627300717A7D /* DataReader.swift in Sources */,
 				D8346A6D1D0B62D400717A7D /* URLParametersReader.swift in Sources */,
 				D8346A661D0B616C00717A7D /* DataResponse.swift in Sources */,
