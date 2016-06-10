@@ -22,5 +22,6 @@ class DataReaderTests: XCTestCase {
             receivedData.append(data)
         }
         XCTAssertEqual(receivedData.count, 1)
+        XCTAssertEqual(receivedData.first ?? [], Array("hello baby".utf8))
     }
 }

@@ -20,6 +20,7 @@
 		D8346A7E1D0B674F00717A7D /* Embassy.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D8346A7D1D0B674F00717A7D /* Embassy.framework */; };
 		D8346A831D0B6DC800717A7D /* JSONResponseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8346A821D0B6DC800717A7D /* JSONResponseTests.swift */; };
 		D8346A851D0B728300717A7D /* DataReaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8346A841D0B728300717A7D /* DataReaderTests.swift */; };
+		D8346A871D0B73B800717A7D /* JSONReaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8346A861D0B73B800717A7D /* JSONReaderTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -49,6 +50,7 @@
 		D8346A7D1D0B674F00717A7D /* Embassy.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Embassy.framework; path = "Carthage/Checkouts/Embassy/build/Debug-iphoneos/Embassy.framework"; sourceTree = "<group>"; };
 		D8346A821D0B6DC800717A7D /* JSONResponseTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSONResponseTests.swift; sourceTree = "<group>"; };
 		D8346A841D0B728300717A7D /* DataReaderTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataReaderTests.swift; sourceTree = "<group>"; };
+		D8346A861D0B73B800717A7D /* JSONReaderTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSONReaderTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -109,6 +111,7 @@
 				D8346A591D0B5FB300717A7D /* DataResponseTests.swift */,
 				D8346A821D0B6DC800717A7D /* JSONResponseTests.swift */,
 				D8346A841D0B728300717A7D /* DataReaderTests.swift */,
+				D8346A861D0B73B800717A7D /* JSONReaderTests.swift */,
 				D8346A5B1D0B5FB300717A7D /* Info.plist */,
 			);
 			path = AmbassadorTests;
@@ -127,8 +130,8 @@
 			isa = PBXGroup;
 			children = (
 				D8346A6A1D0B627300717A7D /* DataReader.swift */,
-				D8346A6C1D0B62D400717A7D /* URLParametersReader.swift */,
 				D8346A6E1D0B62F300717A7D /* JSONReader.swift */,
+				D8346A6C1D0B62D400717A7D /* URLParametersReader.swift */,
 			);
 			path = Readers;
 			sourceTree = "<group>";
@@ -263,6 +266,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D8346A871D0B73B800717A7D /* JSONReaderTests.swift in Sources */,
 				D8346A851D0B728300717A7D /* DataReaderTests.swift in Sources */,
 				D8346A831D0B6DC800717A7D /* JSONResponseTests.swift in Sources */,
 				D8346A5A1D0B5FB300717A7D /* DataResponseTests.swift in Sources */,
