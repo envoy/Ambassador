@@ -12,6 +12,6 @@ Pod::Spec.new do |spec|
     git: 'https://github.com/envoy/Ambassador.git',
     tag: 'v0.0.1-alpha-1'
   }
-  spec.source_files = 'Ambassador/*.swift'
+  spec.source_files = 'Ambassador/*.swift', 'Ambassador/**/*.swift'
   spec.dependency 'Embassy', '~> 1.0'
 end
