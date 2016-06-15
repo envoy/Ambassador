@@ -20,7 +20,7 @@ Here's an example how to mock API endpoints with Ambassador and [Embassy](https:
 
 ```Swift
 import Embassy
-import Ambassador
+import EnvoyAmbassador
 
 let loop = try! SelectorEventLoop(selector: try! KqueueSelector())
 let router = Router()
