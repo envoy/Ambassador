@@ -176,7 +176,7 @@ In most cases, you won't like to handle the data stream manually. To wait all da
 ```Swift
 router["/api/v2/users"] = JSONResponse() { environ -> AnyObject in
     let input = environ["swsgi.input"] as! SWSGIInput
-    DataReader.read { data in
+    DataReader.read(input) { data in
         // handle the whole data here
     }
 }
@@ -189,7 +189,7 @@ Like `DataReader`, besides reading the whole chunk of data, `JSONReader` also pa
 ```Swift
 router["/api/v2/users"] = JSONResponse() { environ -> AnyObject in
     let input = environ["swsgi.input"] as! SWSGIInput
-    JSONReader.read { json in
+    JSONReader.read(input) { json in
         // handle the json object here
     }
 }
@@ -202,7 +202,7 @@ router["/api/v2/users"] = JSONResponse() { environ -> AnyObject in
 ```Swift
 router["/api/v2/users"] = URLParametersReader() { environ -> AnyObject in
     let input = environ["swsgi.input"] as! SWSGIInput
-    JSONReader.read { params in
+    JSONReader.read(input) { params in
         // handle the params object here
     }
 }
