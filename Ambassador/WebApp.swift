@@ -13,11 +13,11 @@ import Embassy
 /// WebApp is a WebAppType for building web app with any SWSGI handler
 public struct WebApp: WebAppType {
     private let handler: SWSGI
-    init(handler: SWSGI) {
+    public init(handler: SWSGI) {
         self.handler = handler
     }
 
-    func app(
+    public func app(
         environ: [String: Any],
         startResponse: ((String, [(String, String)]) -> Void),
         sendBody: ([UInt8] -> Void)
