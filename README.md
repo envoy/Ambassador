@@ -221,7 +221,7 @@ let params = URLParametersReader.parseURLParameters("foo=bar&eggs=spam")
 To install with CocoaPod, add Embassy to your Podfile:
 
 ```
-pod 'EnvoyAmbassador', '~> 0.0.1-alpha-1'
+pod 'EnvoyAmbassador', '~> 0.0.1-alpha-2'
 ```
 
 ### Carthage
