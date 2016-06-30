@@ -18,7 +18,7 @@ public struct WebApp: WebAppType {
     }
 
     func app(
-        environ: [String : Any],
+        environ: [String: Any],
         startResponse: ((String, [(String, String)]) -> Void),
         sendBody: ([UInt8] -> Void)
     ) {
