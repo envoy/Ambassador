@@ -12,6 +12,7 @@ Lightweight web framework in Swift based on SWSGI for iOS UI Automatic testing d
  - Super lightweight
  - Easy to use, designed for UI automatic testing API mocking
  - Based on [SWSGI](https://github.com/envoy/Embassy#whats-swsgi-swift-web-server-gateway-interface), can run with HTTP server other than [Embassy](https://github.com/envoy/Embassy)
+ - Response handlers designed as middlewares, easy to composite
  - Async friendly
 
 ## Example
