@@ -11,7 +11,7 @@
 		D8346A551D0B5FB300717A7D /* Ambassador.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D8346A4A1D0B5FB200717A7D /* Ambassador.framework */; };
 		D8346A5A1D0B5FB300717A7D /* DataResponseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8346A591D0B5FB300717A7D /* DataResponseTests.swift */; };
 		D8346A661D0B616C00717A7D /* DataResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8346A651D0B616C00717A7D /* DataResponse.swift */; };
-		D8346A681D0B619C00717A7D /* WebAppType.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8346A671D0B619C00717A7D /* WebAppType.swift */; };
+		D8346A681D0B619C00717A7D /* WebApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8346A671D0B619C00717A7D /* WebApp.swift */; };
 		D8346A6B1D0B627300717A7D /* DataReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8346A6A1D0B627300717A7D /* DataReader.swift */; };
 		D8346A6D1D0B62D400717A7D /* URLParametersReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8346A6C1D0B62D400717A7D /* URLParametersReader.swift */; };
 		D8346A6F1D0B62F300717A7D /* JSONReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8346A6E1D0B62F300717A7D /* JSONReader.swift */; };
@@ -24,7 +24,7 @@
 		D8346A891D0B745A00717A7D /* URLParametersReaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8346A881D0B745A00717A7D /* URLParametersReaderTests.swift */; };
 		D8346A8B1D0B777700717A7D /* RouterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8346A8A1D0B777700717A7D /* RouterTests.swift */; };
 		D8346A8D1D0B7A4600717A7D /* DelayResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8346A8C1D0B7A4600717A7D /* DelayResponse.swift */; };
-		D89711A21D25C0F2003DEB8D /* WebApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = D89711A11D25C0F2003DEB8D /* WebApp.swift */; };
+		D89711A21D25C0F2003DEB8D /* SWGIWebApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = D89711A11D25C0F2003DEB8D /* SWGIWebApp.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -45,7 +45,7 @@
 		D8346A591D0B5FB300717A7D /* DataResponseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataResponseTests.swift; sourceTree = "<group>"; };
 		D8346A5B1D0B5FB300717A7D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D8346A651D0B616C00717A7D /* DataResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataResponse.swift; sourceTree = "<group>"; };
-		D8346A671D0B619C00717A7D /* WebAppType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebAppType.swift; sourceTree = "<group>"; };
+		D8346A671D0B619C00717A7D /* WebApp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebApp.swift; sourceTree = "<group>"; };
 		D8346A6A1D0B627300717A7D /* DataReader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataReader.swift; sourceTree = "<group>"; };
 		D8346A6C1D0B62D400717A7D /* URLParametersReader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = URLParametersReader.swift; sourceTree = "<group>"; };
 		D8346A6E1D0B62F300717A7D /* JSONReader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSONReader.swift; sourceTree = "<group>"; };
@@ -58,7 +58,7 @@
 		D8346A881D0B745A00717A7D /* URLParametersReaderTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = URLParametersReaderTests.swift; sourceTree = "<group>"; };
 		D8346A8A1D0B777700717A7D /* RouterTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RouterTests.swift; sourceTree = "<group>"; };
 		D8346A8C1D0B7A4600717A7D /* DelayResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DelayResponse.swift; sourceTree = "<group>"; };
-		D89711A11D25C0F2003DEB8D /* WebApp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebApp.swift; sourceTree = "<group>"; };
+		D89711A11D25C0F2003DEB8D /* SWGIWebApp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SWGIWebApp.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -106,8 +106,8 @@
 				D8346A641D0B614800717A7D /* Responses */,
 				D8346A691D0B622D00717A7D /* Readers */,
 				D8346A4D1D0B5FB300717A7D /* Ambassador.h */,
-				D8346A671D0B619C00717A7D /* WebAppType.swift */,
-				D89711A11D25C0F2003DEB8D /* WebApp.swift */,
+				D8346A671D0B619C00717A7D /* WebApp.swift */,
+				D89711A11D25C0F2003DEB8D /* SWGIWebApp.swift */,
 				D8346A721D0B636300717A7D /* Router.swift */,
 				D8346A4F1D0B5FB300717A7D /* Info.plist */,
 			);
@@ -213,14 +213,16 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0730;
-				LastUpgradeCheck = 0730;
+				LastUpgradeCheck = 0810;
 				ORGANIZATIONNAME = "Fang-Pen Lin";
 				TargetAttributes = {
 					D8346A491D0B5FB200717A7D = {
 						CreatedOnToolsVersion = 7.3.1;
+						LastSwiftMigration = 0800;
 					};
 					D8346A531D0B5FB300717A7D = {
 						CreatedOnToolsVersion = 7.3.1;
+						LastSwiftMigration = 0800;
 					};
 				};
 			};
@@ -265,8 +267,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				D8346A711D0B633700717A7D /* JSONResponse.swift in Sources */,
-				D8346A681D0B619C00717A7D /* WebAppType.swift in Sources */,
-				D89711A21D25C0F2003DEB8D /* WebApp.swift in Sources */,
+				D8346A681D0B619C00717A7D /* WebApp.swift in Sources */,
+				D89711A21D25C0F2003DEB8D /* SWGIWebApp.swift in Sources */,
 				D8346A6F1D0B62F300717A7D /* JSONReader.swift in Sources */,
 				D8346A731D0B636300717A7D /* Router.swift in Sources */,
 				D8346A8D1D0B7A4600717A7D /* DelayResponse.swift in Sources */,
@@ -314,8 +316,10 @@
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
@@ -363,8 +367,10 @@
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
@@ -384,6 +390,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -395,6 +402,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
@@ -410,6 +418,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
 		};
@@ -417,6 +426,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
@@ -431,6 +441,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.envoy.Ambassador;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 3.0;
 			};
 			name = Release;
 		};
@@ -441,6 +452,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.envoy.AmbassadorTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
 		};
@@ -451,6 +463,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.envoy.AmbassadorTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
 			};
 			name = Release;
 		};

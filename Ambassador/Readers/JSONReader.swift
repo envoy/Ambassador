@@ -16,17 +16,17 @@ public struct JSONReader {
     ///  - Parameter errorHandler: the handler to be called parsing JSON failed
     ///  - Parameter handler: the handler to be called when finish reading all data and parsed as JSON
     public static func read(
-        input: SWSGIInput,
-        errorHandler: (ErrorType -> Void)? = nil,
-        handler: (AnyObject -> Void)
+        _ input: SWSGIInput,
+        errorHandler: ((Error) -> Void)? = nil,
+        handler: @escaping ((Any) -> Void)
     ) {
         DataReader.read(input) { data in
             do {
-                let json = try NSJSONSerialization.JSONObjectWithData(
-                    NSData(bytes: data, length: data.count),
-                    options: .AllowFragments
-                )
-                handler(json)
+              let json = try JSONSerialization.jsonObject(
+                  with: data,
+                  options: .allowFragments
+              )
+              handler(json)
             } catch {
                 if let errorHandler = errorHandler {
                     errorHandler(error)

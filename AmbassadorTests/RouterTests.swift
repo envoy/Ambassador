@@ -13,8 +13,8 @@ import Ambassador
 class RouterTests: XCTestCase {
     func testRouter() {
         let router = Router()
-        router["/path/to/1"] = DataResponse() { environ -> [UInt8] in
-            return Array("hello".utf8)
+        router["/path/to/1"] = DataResponse() { environ -> Data in
+            return Data("hello".utf8)
         }
 
         var receivedStatus: [String] = []
@@ -22,8 +22,8 @@ class RouterTests: XCTestCase {
             receivedStatus.append(status)
         }
 
-        var receivedData: [[UInt8]] = []
-        let sendBody = { (data: [UInt8]) in
+        var receivedData: [Data] = []
+        let sendBody = { (data: Data) in
             receivedData.append(data)
         }
         let environ: [String: Any] = [
@@ -54,7 +54,7 @@ class RouterTests: XCTestCase {
         XCTAssertEqual(receivedStatus.count, 2)
         XCTAssertEqual(receivedStatus.last, "200 OK")
         XCTAssertEqual(receivedData.count, 3)
-        XCTAssertEqual(String(bytes: receivedData[1], encoding: NSUTF8StringEncoding), "hello")
+        XCTAssertEqual(String(bytes: receivedData[1], encoding: String.Encoding.utf8), "hello")
         XCTAssertEqual(receivedData.last?.count, 0)
     }
 }
