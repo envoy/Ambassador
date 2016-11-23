@@ -39,18 +39,46 @@ open class Router: WebApp {
             routes[path] = newValue!
         }
     }
-
+    
     open func app(
         _ environ: [String: Any],
         startResponse: @escaping ((String, [(String, String)]) -> Void),
         sendBody: @escaping ((Data) -> Void)
     ) {
         let path = environ["PATH_INFO"] as! String
-        // TODO: in the future, this should also support pattern matching
-        if let webApp = routes[path] {
+        
+        if let (webApp, captures) = matchRoute(to: path) {
+            var environ = environ
+            environ["PATH_CAPTURES"] = captures
             webApp.app(environ, startResponse: startResponse, sendBody: sendBody)
             return
         }
         return notFoundResponse.app(environ, startResponse: startResponse, sendBody: sendBody)
+    }
+    
+    private func matchRoute(to searchPath: String) -> (WebApp, [String])? {
+        
+        for (path, route) in routes {
+            
+            let regex = try! NSRegularExpression(pattern: path, options: [])
+            
+            let matches = regex.matches(in: searchPath, options: [], range: NSRange(location: 0, length: searchPath.characters.count))
+            if !matches.isEmpty {
+                
+                let searchPath = searchPath as NSString
+                let match = matches[0]
+                
+                var captures = [String]()
+                
+                for rangeIdx in 1 ..< match.numberOfRanges {
+                    captures.append(searchPath.substring(with: match.rangeAt(rangeIdx)))
+                }
+                
+                return (route, captures)
+            }
+            
+        }
+        
+        return nil
     }
 }
