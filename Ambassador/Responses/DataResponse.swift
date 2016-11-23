@@ -20,7 +20,7 @@ public struct DataResponse: WebApp {
     /// Headers to response
     public let headers: [(String, String)]
     /// Function for generating JSON response
-    public let handler: (_ environ: [String: Any], _ sendData: (Data) -> Void) -> Void
+    public let handler: (_ environ: [String: Any], _ sendData: @escaping (Data) -> Void) -> Void
     /// The Content type to response
     public let contentType: String
 
@@ -29,7 +29,7 @@ public struct DataResponse: WebApp {
         statusMessage: String = "OK",
         contentType: String = "application/octet-stream",
         headers: [(String, String)] = [],
-        handler: @escaping (_ environ: [String: Any], _ sendData: (Data) -> Void) -> Void
+        handler: @escaping (_ environ: [String: Any], _ sendData: @escaping (Data) -> Void) -> Void
     ) {
         self.statusCode = statusCode
         self.statusMessage = statusMessage
