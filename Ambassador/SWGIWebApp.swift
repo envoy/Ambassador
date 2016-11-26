@@ -10,7 +10,7 @@ import Foundation
 
 import Embassy
 
-/// SWGIWebApp is a WebAppType for building web app with any SWSGI handler
+/// SWGIWebApp is a WebApp for building web app with any SWSGI handler
 public struct SWGIWebApp: WebApp {
     private let handler: SWSGI
     public init(handler: @escaping SWSGI) {
