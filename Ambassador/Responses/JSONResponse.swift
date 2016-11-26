@@ -21,7 +21,7 @@ public struct JSONResponse: WebApp {
         contentType: String = "application/json",
         jsonWritingOptions: JSONSerialization.WritingOptions = .prettyPrinted,
         headers: [(String, String)] = [],
-        handler: @escaping (_ environ: [String: Any], _ sendJSON: (Any) -> Void) -> Void
+        handler: @escaping (_ environ: [String: Any], _ sendJSON: @escaping (Any) -> Void) -> Void
     ) {
         dataResponse = DataResponse(
             statusCode: statusCode,
