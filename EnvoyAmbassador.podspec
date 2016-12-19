@@ -13,5 +13,5 @@ Pod::Spec.new do |spec|
     tag: 'v0.0.1-alpha-3'
   }
   spec.source_files = 'Ambassador/*.swift', 'Ambassador/**/*.swift'
-  spec.dependency 'Embassy', '~> 1.0'
+  spec.dependency 'Embassy', '~> 3.0'
 end
