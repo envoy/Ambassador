@@ -39,6 +39,7 @@
 		D8346A891D0B745A00717A7D /* URLParametersReaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8346A881D0B745A00717A7D /* URLParametersReaderTests.swift */; };
 		D8346A8B1D0B777700717A7D /* RouterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8346A8A1D0B777700717A7D /* RouterTests.swift */; };
 		D8346A8D1D0B7A4600717A7D /* DelayResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8346A8C1D0B7A4600717A7D /* DelayResponse.swift */; };
+		D872606D1E0C9D41008572ED /* Ambassador.h in Headers */ = {isa = PBXBuildFile; fileRef = D872606C1E0C9D41008572ED /* Ambassador.h */; };
 		D89711A21D25C0F2003DEB8D /* SWGIWebApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = D89711A11D25C0F2003DEB8D /* SWGIWebApp.swift */; };
 /* End PBXBuildFile section */
 
@@ -82,6 +83,7 @@
 		D8346A8C1D0B7A4600717A7D /* DelayResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DelayResponse.swift; sourceTree = "<group>"; };
 		D87260671E0C6D3E008572ED /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D872606A1E0C6D9D008572ED /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		D872606C1E0C9D41008572ED /* Ambassador.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Ambassador.h; sourceTree = "<group>"; };
 		D89711A11D25C0F2003DEB8D /* SWGIWebApp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SWGIWebApp.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -148,6 +150,7 @@
 				D8346A641D0B614800717A7D /* Responses */,
 				D8346A691D0B622D00717A7D /* Readers */,
 				D87260661E0C6D10008572ED /* Supporting Files */,
+				D872606C1E0C9D41008572ED /* Ambassador.h */,
 				D8346A671D0B619C00717A7D /* WebApp.swift */,
 				D89711A11D25C0F2003DEB8D /* SWGIWebApp.swift */,
 				D8346A721D0B636300717A7D /* Router.swift */,
@@ -228,6 +231,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D872606D1E0C9D41008572ED /* Ambassador.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
