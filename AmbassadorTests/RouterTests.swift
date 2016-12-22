@@ -61,7 +61,9 @@ class RouterTests: XCTestCase {
     func testRegularExpressionRouting() {
         let router = Router()
         var receivedCaptures: [String]?
-        router["/activate/email/([a-zA-Z0-9]+@[a-zA-Z0-9]+\\.[a-zA-Z0-9]+)/code/([a-zA-Z0-9]+)"] = DataResponse() { environ -> Data in
+        let emailRoute = "/activate/email/([a-zA-Z0-9]+@[a-zA-Z0-9]+\\.[a-zA-Z0-9]+)" +
+            "/code/([a-zA-Z0-9]+)"
+        router[emailRoute] = DataResponse() { environ -> Data in
             receivedCaptures = environ["ambassador.router_captures"] as? [String]
             return Data("email".utf8)
         }
