@@ -48,12 +48,12 @@ public struct DelayResponse: WebApp {
         let loop = environ["embassy.event_loop"] as! EventLoop
 
         let delayedStartResponse = { (status: String, headers: [(String, String)]) in
-            loop.callLater(delayTime) {
+            loop.call(withDelay: delayTime) {
                 startResponse(status, headers)
             }
         }
         let delayedSendBody = { (data: Data) in
-            loop.callLater(delayTime) {
+            loop.call(withDelay: delayTime) {
                 sendBody(data)
             }
         }
