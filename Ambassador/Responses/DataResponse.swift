@@ -12,7 +12,7 @@ import Embassy
 
 // TODO: maybe we should move these stuff to Embassy instead
 /// Data response responses data from given handler immediately to the client
-public struct DataResponse: WebAppType {
+public struct DataResponse: WebApp {
     /// The status code to response
     public let statusCode: Int
     /// The status message to response
@@ -20,7 +20,7 @@ public struct DataResponse: WebAppType {
     /// Headers to response
     public let headers: [(String, String)]
     /// Function for generating JSON response
-    public let handler: (environ: [String: Any], sendData: [UInt8] -> Void) -> Void
+    public let handler: (_ environ: [String: Any], _ sendData: @escaping (Data) -> Void) -> Void
     /// The Content type to response
     public let contentType: String
 
@@ -29,7 +29,7 @@ public struct DataResponse: WebAppType {
         statusMessage: String = "OK",
         contentType: String = "application/octet-stream",
         headers: [(String, String)] = [],
-        handler: (environ: [String: Any], sendData: [UInt8] -> Void) -> Void
+        handler: @escaping (_ environ: [String: Any], _ sendData: @escaping (Data) -> Void) -> Void
     ) {
         self.statusCode = statusCode
         self.statusMessage = statusMessage
@@ -43,7 +43,7 @@ public struct DataResponse: WebAppType {
         statusMessage: String = "OK",
         contentType: String = "application/octet-stream",
         headers: [(String, String)] = [],
-        handler: ((environ: [String: Any]) -> [UInt8])? = nil
+        handler: ((_ environ: [String: Any]) -> Data)? = nil
     ) {
         self.statusCode = statusCode
         self.statusMessage = statusMessage
@@ -51,20 +51,20 @@ public struct DataResponse: WebAppType {
         self.headers = headers
         self.handler = { environ, sendData in
             if let handler = handler {
-                let data = handler(environ: environ)
+                let data = handler(environ)
                 sendData(data)
             } else {
-                sendData([])
+                sendData(Data())
             }
         }
     }
 
     public func app(
-        environ: [String: Any],
-        startResponse: ((String, [(String, String)]) -> Void),
-        sendBody: ([UInt8] -> Void)
+        _ environ: [String: Any],
+        startResponse: @escaping ((String, [(String, String)]) -> Void),
+        sendBody: @escaping ((Data) -> Void)
     ) {
-        handler(environ: environ) { data in
+        handler(environ) { data in
             var headers = self.headers
             let headerDict = MultiDictionary<String, String, LowercaseKeyTransform>(items: headers)
             if headerDict["Content-Type"] == nil {
@@ -78,7 +78,7 @@ public struct DataResponse: WebAppType {
             if !data.isEmpty {
                 sendBody(data)
             }
-            sendBody([])
+            sendBody(Data())
         }
     }
 }

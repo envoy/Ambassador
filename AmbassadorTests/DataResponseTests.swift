@@ -21,9 +21,9 @@ class DataResponseTests: XCTestCase {
             headers: [
                 ("X-Foo-Bar", "header")
             ]
-        ) { (environ) -> [UInt8] in
+        ) { (environ) -> Data in
             receivedEnviron = environ
-            return Array("hello".utf8)
+            return Data("hello".utf8)
         }
 
         var receivedStatus: String?
@@ -33,8 +33,8 @@ class DataResponseTests: XCTestCase {
             receivedHeaders = headers
         }
 
-        var receivedData: [[UInt8]] = []
-        let sendBody = { (data: [UInt8]) in
+        var receivedData: [Data] = []
+        let sendBody = { (data: Data) in
             receivedData.append(data)
         }
 
@@ -58,7 +58,7 @@ class DataResponseTests: XCTestCase {
         XCTAssertEqual(headersDict["X-Foo-Bar"], "header")
 
         XCTAssertEqual(receivedData.count, 2)
-        XCTAssertEqual(receivedData.first ?? [], Array("hello".utf8))
+        XCTAssertEqual(receivedData.first ?? Data(), Data("hello".utf8))
         XCTAssertEqual(receivedData.last?.count, 0)
 
         XCTAssertEqual(receivedEnviron?.count, environ.count)
@@ -72,8 +72,8 @@ class DataResponseTests: XCTestCase {
 
         let startResponse = { (status: String, headers: [(String, String)]) in
         }
-        var receivedData: [[UInt8]] = []
-        let sendBody = { (data: [UInt8]) in
+        var receivedData: [Data] = []
+        let sendBody = { (data: Data) in
             receivedData.append(data)
         }
 

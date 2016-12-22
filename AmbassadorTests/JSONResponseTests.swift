@@ -13,7 +13,7 @@ import Ambassador
 
 class JSONResponseTests: XCTestCase {
     func testJSONResponse() {
-        let dataResponse = JSONResponse() { (environ) -> AnyObject in
+        let dataResponse = JSONResponse() { (environ) -> Any in
             return ["foo", "bar"]
         }
 
@@ -24,8 +24,8 @@ class JSONResponseTests: XCTestCase {
             receivedHeaders = headers
         }
 
-        var receivedData: [[UInt8]] = []
-        let sendBody = { (data: [UInt8]) in
+        var receivedData: [Data] = []
+        let sendBody = { (data: Data) in
             receivedData.append(data)
         }
 
@@ -48,10 +48,10 @@ class JSONResponseTests: XCTestCase {
 
         XCTAssertEqual(receivedData.count, 2)
         XCTAssertEqual(receivedData.last?.count, 0)
-        let bytes = receivedData.first ?? []
-        let parsedJSON: [String] = try! NSJSONSerialization.JSONObjectWithData(
-            NSData(bytes: bytes, length: bytes.count),
-            options: .AllowFragments
+        let bytes = receivedData.first ?? Data()
+        let parsedJSON: [String] = try! JSONSerialization.jsonObject(
+            with: bytes,
+            options: .allowFragments
         ) as? [String] ?? []
         XCTAssertEqual(parsedJSON, ["foo", "bar"])
     }
