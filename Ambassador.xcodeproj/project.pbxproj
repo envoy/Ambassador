@@ -7,10 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		AA67328C1DE92C0A003ABD4E /* Ambassador-iOS.h in Headers */ = {isa = PBXBuildFile; fileRef = AA67328A1DE92C0A003ABD4E /* Ambassador-iOS.h */; };
 		AA67329E1DE93849003ABD4E /* Ambassador.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA6732951DE93849003ABD4E /* Ambassador.framework */; };
-		AA6732A31DE93849003ABD4E /* Ambassador_macOSTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA6732A21DE93849003ABD4E /* Ambassador_macOSTests.swift */; };
-		AA6732A51DE93849003ABD4E /* Ambassador-macOS.h in Headers */ = {isa = PBXBuildFile; fileRef = AA6732971DE93849003ABD4E /* Ambassador-macOS.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		AA6732AC1DE938DC003ABD4E /* DataResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8346A651D0B616C00717A7D /* DataResponse.swift */; };
 		AA6732AD1DE938DC003ABD4E /* JSONResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8346A701D0B633700717A7D /* JSONResponse.swift */; };
 		AA6732AE1DE938DC003ABD4E /* DataReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8346A6A1D0B627300717A7D /* DataReader.swift */; };
@@ -26,7 +23,6 @@
 		AA6732B81DE938E1003ABD4E /* URLParametersReaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8346A881D0B745A00717A7D /* URLParametersReaderTests.swift */; };
 		AA6732B91DE938E1003ABD4E /* RouterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8346A8A1D0B777700717A7D /* RouterTests.swift */; };
 		AA6732BD1DE9396B003ABD4E /* Embassy.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA6732BC1DE9396B003ABD4E /* Embassy.framework */; };
-		AA6732BE1DE93AD0003ABD4E /* Ambassador_iOSTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA6732BA1DE938F2003ABD4E /* Ambassador_iOSTests.swift */; };
 		D8346A551D0B5FB300717A7D /* Ambassador.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D8346A4A1D0B5FB200717A7D /* Ambassador.framework */; };
 		D8346A5A1D0B5FB300717A7D /* DataResponseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8346A591D0B5FB300717A7D /* DataResponseTests.swift */; };
 		D8346A661D0B616C00717A7D /* DataResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8346A651D0B616C00717A7D /* DataResponse.swift */; };
@@ -64,16 +60,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		AA67328A1DE92C0A003ABD4E /* Ambassador-iOS.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Ambassador-iOS.h"; sourceTree = "<group>"; };
-		AA67328B1DE92C0A003ABD4E /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		AA67328E1DE92C27003ABD4E /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		AA6732951DE93849003ABD4E /* Ambassador.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Ambassador.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		AA6732971DE93849003ABD4E /* Ambassador-macOS.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Ambassador-macOS.h"; sourceTree = "<group>"; };
-		AA6732981DE93849003ABD4E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		AA67329D1DE93849003ABD4E /* Ambassador-macOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Ambassador-macOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
-		AA6732A21DE93849003ABD4E /* Ambassador_macOSTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Ambassador_macOSTests.swift; sourceTree = "<group>"; };
-		AA6732A41DE93849003ABD4E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		AA6732BA1DE938F2003ABD4E /* Ambassador_iOSTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Ambassador_iOSTests.swift; sourceTree = "<group>"; };
 		AA6732BC1DE9396B003ABD4E /* Embassy.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Embassy.framework; path = ../Embassy/build/Debug/Embassy.framework; sourceTree = "<group>"; };
 		D8346A4A1D0B5FB200717A7D /* Ambassador.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Ambassador.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D8346A541D0B5FB300717A7D /* Ambassador-iOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Ambassador-iOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -92,6 +80,8 @@
 		D8346A881D0B745A00717A7D /* URLParametersReaderTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = URLParametersReaderTests.swift; sourceTree = "<group>"; };
 		D8346A8A1D0B777700717A7D /* RouterTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RouterTests.swift; sourceTree = "<group>"; };
 		D8346A8C1D0B7A4600717A7D /* DelayResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DelayResponse.swift; sourceTree = "<group>"; };
+		D87260671E0C6D3E008572ED /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		D872606A1E0C6D9D008572ED /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D89711A11D25C0F2003DEB8D /* SWGIWebApp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SWGIWebApp.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -131,51 +121,11 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		AA6732881DE92BCD003ABD4E /* iOS */ = {
-			isa = PBXGroup;
-			children = (
-				AA67328A1DE92C0A003ABD4E /* Ambassador-iOS.h */,
-				AA67328B1DE92C0A003ABD4E /* Info.plist */,
-			);
-			path = iOS;
-			sourceTree = "<group>";
-		};
-		AA6732891DE92BDA003ABD4E /* iOSTests */ = {
-			isa = PBXGroup;
-			children = (
-				AA6732BA1DE938F2003ABD4E /* Ambassador_iOSTests.swift */,
-				AA67328E1DE92C27003ABD4E /* Info.plist */,
-			);
-			path = iOSTests;
-			sourceTree = "<group>";
-		};
-		AA6732961DE93849003ABD4E /* macOS */ = {
-			isa = PBXGroup;
-			children = (
-				AA6732971DE93849003ABD4E /* Ambassador-macOS.h */,
-				AA6732981DE93849003ABD4E /* Info.plist */,
-			);
-			path = macOS;
-			sourceTree = "<group>";
-		};
-		AA6732A11DE93849003ABD4E /* macOSTests */ = {
-			isa = PBXGroup;
-			children = (
-				AA6732A21DE93849003ABD4E /* Ambassador_macOSTests.swift */,
-				AA6732A41DE93849003ABD4E /* Info.plist */,
-			);
-			path = macOSTests;
-			sourceTree = "<group>";
-		};
 		D8346A401D0B5FB200717A7D = {
 			isa = PBXGroup;
 			children = (
 				D8346A4C1D0B5FB300717A7D /* Ambassador */,
 				D8346A581D0B5FB300717A7D /* AmbassadorTests */,
-				AA6732881DE92BCD003ABD4E /* iOS */,
-				AA6732891DE92BDA003ABD4E /* iOSTests */,
-				AA6732961DE93849003ABD4E /* macOS */,
-				AA6732A11DE93849003ABD4E /* macOSTests */,
 				D8346A4B1D0B5FB200717A7D /* Products */,
 				D8346A7F1D0B675C00717A7D /* Frameworks */,
 			);
@@ -197,6 +147,7 @@
 			children = (
 				D8346A641D0B614800717A7D /* Responses */,
 				D8346A691D0B622D00717A7D /* Readers */,
+				D87260661E0C6D10008572ED /* Supporting Files */,
 				D8346A671D0B619C00717A7D /* WebApp.swift */,
 				D89711A11D25C0F2003DEB8D /* SWGIWebApp.swift */,
 				D8346A721D0B636300717A7D /* Router.swift */,
@@ -207,6 +158,7 @@
 		D8346A581D0B5FB300717A7D /* AmbassadorTests */ = {
 			isa = PBXGroup;
 			children = (
+				D87260691E0C6D42008572ED /* Supporting Files */,
 				D8346A591D0B5FB300717A7D /* DataResponseTests.swift */,
 				D8346A821D0B6DC800717A7D /* JSONResponseTests.swift */,
 				D8346A841D0B728300717A7D /* DataReaderTests.swift */,
@@ -246,6 +198,22 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		D87260661E0C6D10008572ED /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				D87260671E0C6D3E008572ED /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		D87260691E0C6D42008572ED /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				D872606A1E0C6D9D008572ED /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -253,7 +221,6 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AA6732A51DE93849003ABD4E /* Ambassador-macOS.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -261,7 +228,6 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AA67328C1DE92C0A003ABD4E /* Ambassador-iOS.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -443,7 +409,6 @@
 				AA6732B71DE938E1003ABD4E /* JSONReaderTests.swift in Sources */,
 				AA6732B81DE938E1003ABD4E /* URLParametersReaderTests.swift in Sources */,
 				AA6732B41DE938E1003ABD4E /* DataResponseTests.swift in Sources */,
-				AA6732A31DE93849003ABD4E /* Ambassador_macOSTests.swift in Sources */,
 				AA6732B91DE938E1003ABD4E /* RouterTests.swift in Sources */,
 				AA6732B51DE938E1003ABD4E /* JSONResponseTests.swift in Sources */,
 			);
@@ -470,7 +435,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				D8346A871D0B73B800717A7D /* JSONReaderTests.swift in Sources */,
-				AA6732BE1DE93AD0003ABD4E /* Ambassador_iOSTests.swift in Sources */,
 				D8346A891D0B745A00717A7D /* URLParametersReaderTests.swift in Sources */,
 				D8346A851D0B728300717A7D /* DataReaderTests.swift in Sources */,
 				D8346A831D0B6DC800717A7D /* JSONResponseTests.swift in Sources */,
@@ -507,7 +471,7 @@
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				FRAMEWORK_VERSION = A;
-				INFOPLIST_FILE = macOS/Info.plist;
+				INFOPLIST_FILE = Ambassador/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.12;
@@ -532,7 +496,7 @@
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				FRAMEWORK_VERSION = A;
-				INFOPLIST_FILE = macOS/Info.plist;
+				INFOPLIST_FILE = Ambassador/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.12;
@@ -552,7 +516,7 @@
 				CLANG_WARN_SUSPICIOUS_MOVES = YES;
 				CODE_SIGN_IDENTITY = "-";
 				COMBINE_HIDPI_IMAGES = YES;
-				INFOPLIST_FILE = macOSTests/Info.plist;
+				INFOPLIST_FILE = AmbassadorTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.envoy.Ambassador-macOSTests";
@@ -571,7 +535,7 @@
 				CLANG_WARN_SUSPICIOUS_MOVES = YES;
 				CODE_SIGN_IDENTITY = "-";
 				COMBINE_HIDPI_IMAGES = YES;
-				INFOPLIST_FILE = macOSTests/Info.plist;
+				INFOPLIST_FILE = AmbassadorTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.envoy.Ambassador-macOSTests";
@@ -690,7 +654,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
 				);
-				INFOPLIST_FILE = iOS/Info.plist;
+				INFOPLIST_FILE = Ambassador/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.envoy.Ambassador;
@@ -714,7 +678,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
 				);
-				INFOPLIST_FILE = iOS/Info.plist;
+				INFOPLIST_FILE = Ambassador/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.envoy.Ambassador;
@@ -727,7 +691,7 @@
 		D8346A621D0B5FB300717A7D /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				INFOPLIST_FILE = iOSTests/Info.plist;
+				INFOPLIST_FILE = AmbassadorTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.envoy.Ambassador-iOSTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -738,7 +702,7 @@
 		D8346A631D0B5FB300717A7D /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				INFOPLIST_FILE = iOSTests/Info.plist;
+				INFOPLIST_FILE = AmbassadorTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.envoy.Ambassador-iOSTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
