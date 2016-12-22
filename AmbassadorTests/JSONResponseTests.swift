@@ -33,7 +33,7 @@ class JSONResponseTests: XCTestCase {
             "REQUEST_METHOD": "GET",
             "SCRIPT_NAME": "",
             "PATH_INFO": "/",
-            ]
+        ]
         dataResponse.app(
             environ,
             startResponse: startResponse,

@@ -24,7 +24,7 @@ public struct URLParametersReader {
         _ input: SWSGIInput,
         errorHandler: ((Error) -> Void)? = nil,
         handler: @escaping (([(String, String)]) -> Void)
-        ) {
+    ) {
         DataReader.read(input) { data in
             do {
                 guard let string = String(bytes: data, encoding: .utf8) else {
