@@ -49,7 +49,7 @@ open class Router: WebApp {
 
         if let (webApp, captures) = matchRoute(to: path) {
             var environ = environ
-            environ["PATH_CAPTURES"] = captures
+            environ["ambassador.router_captures"] = captures
             webApp.app(environ, startResponse: startResponse, sendBody: sendBody)
             return
         }
