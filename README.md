@@ -27,7 +27,7 @@ let loop = try! SelectorEventLoop(selector: try! KqueueSelector())
 let router = Router()
 let server = DefaultHTTPServer(eventLoop: loop, port: 8080, app: router.app)
 
-router["/api/v2/users"] = DelayResponse(JSONResponse(handler: { _ -> AnyObject in
+router["/api/v2/users"] = DelayResponse(JSONResponse(handler: { _ -> Any in
     return [
         ["id": "01", "name": "john"],
         ["id": "02", "name": "tom"]
@@ -62,7 +62,7 @@ Then you can visit [http://[::1]:8080/api/v2/users](http://[::1]:8080/api/v2/use
 
 ```Swift
 let router = Router()
-router["/api/v2/users"] = DelayResponse(JSONResponse(handler: { _ -> AnyObject in
+router["/api/v2/users"] = DelayResponse(JSONResponse(handler: { _ -> Any in
     return [
         ["id": "01", "name": "john"],
         ["id": "02", "name": "tom"]
@@ -110,10 +110,10 @@ Please notice, unlike `sendBody` for SWSGI, `sendData` only expects to be called
 
 ## JSONResponse
 
-Almost identical to `DataResponse`, except it takes `AnyObject` instead of bytes and dump the object as JSON format and response it for you. For example:
+Almost identical to `DataResponse`, except it takes `Any` instead of bytes and dump the object as JSON format and response it for you. For example:
 
 ```Swift
-router["/api/v2/users"] = JSONResponse() { _ -> AnyObject in
+router["/api/v2/users"] = JSONResponse() { _ -> Any in
     return [
         ["id": "01", "name": "john"],
         ["id": "02", "name": "tom"]
@@ -126,7 +126,7 @@ router["/api/v2/users"] = JSONResponse() { _ -> AnyObject in
 `DelayResponse` is a **decorator** response that delays given response for a while. In real-world, there will always be network latency, to simulte the latency, `DelayResponse` is very helpful. To delay a response, just do
 
 ```Swift
-router["/api/v2/users"] = DelayResponse(JSONResponse(handler: { _ -> AnyObject in
+router["/api/v2/users"] = DelayResponse(JSONResponse(handler: { _ -> Any in
     return [
         ["id": "01", "name": "john"],
         ["id": "02", "name": "tom"]
@@ -137,7 +137,7 @@ router["/api/v2/users"] = DelayResponse(JSONResponse(handler: { _ -> AnyObject i
 By default, it delays the response randomly. You can modify it by passing `delay` parameter. Like, say if you want to delay it for 10 seconds, then here you do
 
 ```Swift
-router["/api/v2/users"] = DelayResponse(JSONResponse(handler: { _ -> AnyObject in
+router["/api/v2/users"] = DelayResponse(JSONResponse(handler: { _ -> Any in
     return [
         ["id": "01", "name": "john"],
         ["id": "02", "name": "tom"]
@@ -175,7 +175,7 @@ It's not too hard to do so, however, the data comes in as stream, like
 In most cases, you won't like to handle the data stream manually. To wait all data received and process them at once, you can use `DataReader`. For instance
 
 ```Swift
-router["/api/v2/users"] = JSONResponse() { environ -> AnyObject in
+router["/api/v2/users"] = JSONResponse() { environ -> Any in
     let input = environ["swsgi.input"] as! SWSGIInput
     DataReader.read(input) { data in
         // handle the whole data here
@@ -188,7 +188,7 @@ router["/api/v2/users"] = JSONResponse() { environ -> AnyObject in
 Like `DataReader`, besides reading the whole chunk of data, `JSONReader` also parse it as JSON format. Herer's how you do
 
 ```Swift
-router["/api/v2/users"] = JSONResponse() { environ -> AnyObject in
+router["/api/v2/users"] = JSONResponse() { environ -> Any in
     let input = environ["swsgi.input"] as! SWSGIInput
     JSONReader.read(input) { json in
         // handle the json object here
@@ -201,7 +201,7 @@ router["/api/v2/users"] = JSONResponse() { environ -> AnyObject in
 `URLParametersReader` wait all data to be received and parse them all at once as URL encoding parameters, like `foo=bar&eggs=spam`. The parameters will be passed as an array key value pairs as `(String, String)`.
 
 ```Swift
-router["/api/v2/users"] = URLParametersReader() { environ -> AnyObject in
+router["/api/v2/users"] = URLParametersReader() { environ -> Any in
     let input = environ["swsgi.input"] as! SWSGIInput
     JSONReader.read(input) { params in
         // handle the params object here
