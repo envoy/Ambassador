@@ -25,7 +25,7 @@ import EnvoyAmbassador
 
 let loop = try! SelectorEventLoop(selector: try! KqueueSelector())
 let router = Router()
-let server = HTTPServer(eventLoop: loop, app: router.app, port: 8080)
+let server = DefaultHTTPServer(eventLoop: loop, port: 8080, app: router.app)
 
 router["/api/v2/users"] = DelayResponse(JSONResponse(handler: { _ -> AnyObject in
     return [
@@ -88,8 +88,8 @@ router["/api/v2/xml"] = DataResponse(
     statusMessage: "created",
     contentType: "application/xml",
     headers: [("X-Foo-Bar", "My header")]
-) { environ -> [UInt8] in
-    return Array("<xml>who uses xml nowadays?</xml>".utf8)
+) { environ -> Data in
+    return Data("<xml>who uses xml nowadays?</xml>".utf8)
 }
 ```
 
@@ -102,7 +102,7 @@ router["/api/v2/xml"] = DataResponse(
     contentType: "application/xml",
     headers: [("X-Foo-Bar", "My header")]
 ) { (environ, sendData) in
-    sendData(Array("<xml>who uses xml nowadays?</xml>".utf8))
+    sendData(Data("<xml>who uses xml nowadays?</xml>".utf8))
 }
 ```
 
@@ -142,15 +142,15 @@ router["/api/v2/users"] = DelayResponse(JSONResponse(handler: { _ -> AnyObject i
         ["id": "01", "name": "john"],
         ["id": "02", "name": "tom"]
     ]
-}), delay: .Delay(10))
+}), delay: .delay(10))
 ```
 
 The available delay options are
 
- - **.Random(min: NSTimeInterval, max: NSTimeInterval)** delay random, it's also the default one as .Random(min: 0.1, max: 3)
- - **.Delay(seconds: NSTimeInterval)** delay specific period of time
- - **.Never** delay forever, the response will never be returned
- - **.None** no delay, i.e. the response will be returned immediately
+ - **.random(min: TimeInterval, max: TimeInterval)** delay random, it's also the default one as .random(min: 0.1, max: 3)
+ - **.delay(seconds: NSTimeInterval)** delay specific period of time
+ - **.never** delay forever, the response will never be returned
+ - **.none** no delay, i.e. the response will be returned immediately
 
 ## DataReader
 
@@ -222,7 +222,7 @@ let params = URLParametersReader.parseURLParameters("foo=bar&eggs=spam")
 To install with CocoaPod, add Embassy to your Podfile:
 
 ```
-pod 'EnvoyAmbassador', '~> 0.0.1-alpha-3'
+pod 'EnvoyAmbassador', '~> 3.0'
 ```
 
 ### Carthage
