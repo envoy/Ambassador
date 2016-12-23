@@ -157,7 +157,7 @@ The available delay options are
 To reas POST body or any other HTTP body from the request, you need to use `swsgi.input` function provided in the `environ` parameter of SWSGI. For example, you can do
 
 ```Swift
-router["/api/v2/users"] = JSONResponse() { environ -> AnyObject in
+router["/api/v2/users"] = JSONResponse() { environ -> Any in
     let input = environ["swsgi.input"] as! SWSGIInput
     input { data in
         // handle the data stream here
