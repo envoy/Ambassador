@@ -77,7 +77,8 @@ You can also map URL with regular expression. For example, you can write this
 ```Swift
 let router = Router()
 router["/api/v2/users/([0-9]+)"] = DelayResponse(JSONResponse(handler: { environ -> Any in
-    return ["id": (environ["ambassador.router_captures"] as! [String])[0], "name": "john"]
+    let captures = environ["ambassador.router_captures"] as! [String]
+    return ["id": captures[0], "name": "john"]
 }))
 ```
 
