@@ -72,6 +72,18 @@ router["/api/v2/users"] = DelayResponse(JSONResponse(handler: { _ -> Any in
 
 and pass `router.app` as the SWSGI interface to the HTTP server. When the visit path is not found, `router.notFoundResponse` will be used, it simply returns 404. You can overwrite the `notFoundResponse` to customize the not found behavior.
 
+You can also map URL with regular expression. For example, you can write this
+
+```Swift
+let router = Router()
+router["/api/v2/users/([0-9]+)"] = DelayResponse(JSONResponse(handler: { environ -> Any in
+    return ["id": (environ["ambassador.router_captures"] as! [String])[0], "name": "john"]
+}))
+```
+
+Then all requests with URL matching `/api/v2/users/([0-9]+)` regular expression will be routed here. For all match groups, they will be passed into environment with key `ambassador.router_captures` as an array of string.
+
+
 ## DataResponse
 
 `DataResponse` is a helper for sending back data. For example, say if you want to make an endpoint to return status code 500, you can do
