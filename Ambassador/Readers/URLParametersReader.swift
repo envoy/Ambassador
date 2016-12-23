@@ -11,8 +11,8 @@ import Foundation
 import Embassy
 
 public struct URLParametersReader {
-    public enum Error: ErrorType {
-        case UTF8EncodingError
+    public enum LocalError: Error {
+        case utf8EncodingError
     }
 
     /// Read all data into bytes array and parse it as URL parameter
@@ -21,14 +21,14 @@ public struct URLParametersReader {
     ///  - Parameter handler: the handler to be called when finish reading all data and parsed as URL
     ///                       parameter
     public static func read(
-        input: SWSGIInput,
-        errorHandler: (ErrorType -> Void)? = nil,
-        handler: ([(String, String)] -> Void)
-        ) {
+        _ input: SWSGIInput,
+        errorHandler: ((Error) -> Void)? = nil,
+        handler: @escaping (([(String, String)]) -> Void)
+    ) {
         DataReader.read(input) { data in
             do {
-                guard let string = String(bytes: data, encoding: NSUTF8StringEncoding) else {
-                    throw Error.UTF8EncodingError
+                guard let string = String(bytes: data, encoding: .utf8) else {
+                    throw LocalError.utf8EncodingError
                 }
                 let parameters = URLParametersReader.parseURLParameters(string)
                 handler(parameters)
@@ -43,15 +43,15 @@ public struct URLParametersReader {
     /// Parse given string as URL parameters
     ///  - Parameter string: URL encoded parameter string to parse
     ///  - Returns: array of (key, value) pairs of URL encoded parameters
-    public static func parseURLParameters(string: String) -> [(String, String)] {
-        let parameters = string.componentsSeparatedByString("&")
+    public static func parseURLParameters(_ string: String) -> [(String, String)] {
+        let parameters = string.components(separatedBy: "&")
         return parameters.map { parameter in
-            let parts = parameter.componentsSeparatedByString("=")
+            let parts = parameter.components(separatedBy: "=")
             let key = parts[0]
-            let value = Array(parts[1..<parts.count]).joinWithSeparator("=")
+            let value = Array(parts[1..<parts.count]).joined(separator: "=")
             return (
-                key.stringByRemovingPercentEncoding ?? key,
-                value.stringByRemovingPercentEncoding ?? value
+                key.removingPercentEncoding ?? key,
+                value.removingPercentEncoding ?? value
             )
         }
     }

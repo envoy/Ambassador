@@ -12,16 +12,16 @@ import Ambassador
 
 class DataReaderTests: XCTestCase {
     func testDataReader() {
-        let input = { (handler: ([UInt8] -> Void)?) in
-            handler!(Array("hello ".utf8))
-            handler!(Array("baby".utf8))
-            handler!([])
+        let input = { (handler: ((Data) -> Void)?) in
+            handler!(Data("hello ".utf8))
+            handler!(Data("baby".utf8))
+            handler!(Data())
         }
-        var receivedData: [[UInt8]] = []
+        var receivedData = [Data]()
         DataReader.read(input) { data in
             receivedData.append(data)
         }
         XCTAssertEqual(receivedData.count, 1)
-        XCTAssertEqual(receivedData.first ?? [], Array("hello baby".utf8))
+        XCTAssertEqual(receivedData.first ?? Data(), Data("hello baby".utf8))
     }
 }

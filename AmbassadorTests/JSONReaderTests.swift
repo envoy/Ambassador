@@ -12,15 +12,15 @@ import Ambassador
 
 class JSONReaderTests: XCTestCase {
     func testJSONReader() {
-        let input = { (handler: ([UInt8] -> Void)?) in
-            handler!(Array("{ ".utf8))
-            handler!(Array("\"name\"".utf8))
-            handler!(Array(":".utf8))
-            handler!(Array("\"heisenberg\"".utf8))
-            handler!(Array("} ".utf8))
-            handler!([])
+        let input = { (handler: ((Data) -> Void)?) in
+            handler!(Data("{ ".utf8))
+            handler!(Data("\"name\"".utf8))
+            handler!(Data(":".utf8))
+            handler!(Data("\"heisenberg\"".utf8))
+            handler!(Data("} ".utf8))
+            handler!(Data())
         }
-        var receivedData: [AnyObject] = []
+        var receivedData: [Any] = []
         JSONReader.read(input) { data in
             receivedData.append(data)
         }

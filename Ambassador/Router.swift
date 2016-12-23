@@ -9,48 +9,71 @@
 import Foundation
 
 /// Router WebApp for routing requests to different WebApp
-public class Router: WebAppType {
-    var routes: [String: WebAppType] = [:]
-    public var notFoundResponse: WebAppType = DataResponse(
+open class Router: WebApp {
+    var routes: [String: WebApp] = [:]
+    open var notFoundResponse: WebApp = DataResponse(
         statusCode: 404,
         statusMessage: "Not found"
     )
-    private let semaphore = dispatch_semaphore_create(1)
+    private let semaphore = DispatchSemaphore(value: 1)
 
     public init() {
     }
 
-    public subscript(path: String) -> WebAppType? {
+    open subscript(path: String) -> WebApp? {
         get {
             // enter critical section
-            dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER)
+            _ = semaphore.wait(timeout: DispatchTime.distantFuture)
             defer {
-                dispatch_semaphore_signal(semaphore)
+                semaphore.signal()
             }
             return routes[path]
         }
 
         set {
             // enter critical section
-            dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER)
+            _ = semaphore.wait(timeout: DispatchTime.distantFuture)
             defer {
-                dispatch_semaphore_signal(semaphore)
+                semaphore.signal()
             }
             routes[path] = newValue!
         }
     }
 
-    public func app(
-        environ: [String: Any],
-        startResponse: ((String, [(String, String)]) -> Void),
-        sendBody: ([UInt8] -> Void)
+    open func app(
+        _ environ: [String: Any],
+        startResponse: @escaping ((String, [(String, String)]) -> Void),
+        sendBody: @escaping ((Data) -> Void)
     ) {
         let path = environ["PATH_INFO"] as! String
-        // TODO: in the future, this should also support pattern matching
-        if let webApp = routes[path] {
+
+        if let (webApp, captures) = matchRoute(to: path) {
+            var environ = environ
+            environ["ambassador.router_captures"] = captures
             webApp.app(environ, startResponse: startResponse, sendBody: sendBody)
             return
         }
         return notFoundResponse.app(environ, startResponse: startResponse, sendBody: sendBody)
+    }
+
+    private func matchRoute(to searchPath: String) -> (WebApp, [String])? {
+        for (path, route) in routes {
+            let regex = try! NSRegularExpression(pattern: path, options: [])
+            let matches = regex.matches(
+                in: searchPath,
+                options: [],
+                range: NSRange(location: 0, length: searchPath.characters.count)
+            )
+            if !matches.isEmpty {
+                let searchPath = searchPath as NSString
+                let match = matches[0]
+                var captures = [String]()
+                for rangeIdx in 1 ..< match.numberOfRanges {
+                    captures.append(searchPath.substring(with: match.rangeAt(rangeIdx)))
+                }
+                return (route, captures)
+            }
+        }
+        return nil
     }
 }
