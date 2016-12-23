@@ -148,7 +148,7 @@ router["/api/v2/users"] = DelayResponse(JSONResponse(handler: { _ -> AnyObject i
 The available delay options are
 
  - **.random(min: TimeInterval, max: TimeInterval)** delay random, it's also the default one as .random(min: 0.1, max: 3)
- - **.delay(seconds: NSTimeInterval)** delay specific period of time
+ - **.delay(seconds: TimeInterval)** delay specific period of time
  - **.never** delay forever, the response will never be returned
  - **.none** no delay, i.e. the response will be returned immediately
 
