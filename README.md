@@ -241,4 +241,10 @@ pod 'EnvoyAmbassador', '~> 3.0'
 
 ### Carthage
 
-To be done
+To install with Carthage, add Ambassador to your Cartfile:
+
+```
+github "envoy/Ambassador" ~> 3.0
+```
+
+Please notice that you should import `Ambassador` instead of `EnvoyAmbassador`. We use `EnvoyAmbassador` for Cocoapods simply because the name `Ambassador` was already tooken.
