@@ -168,7 +168,7 @@ The available delay options are
 
 ## DataReader
 
-To reas POST body or any other HTTP body from the request, you need to use `swsgi.input` function provided in the `environ` parameter of SWSGI. For example, you can do
+To reas POST body or any other HTTP body from the request, you need to use `swsgi.input` function provided in the `environ` parameter of SWSGI. For example, you can do it like this
 
 ```Swift
 router["/api/v2/users"] = JSONResponse() { environ -> Any in
@@ -199,7 +199,7 @@ router["/api/v2/users"] = JSONResponse() { environ -> Any in
 
 ## JSONReader
 
-Like `DataReader`, besides reading the whole chunk of data, `JSONReader` also parse it as JSON format. Herer's how you do
+Like `DataReader`, besides reading the whole chunk of data, `JSONReader` also parses it as JSON format. Herer's how you do
 
 ```Swift
 router["/api/v2/users"] = JSONResponse() { environ -> Any in
@@ -212,12 +212,12 @@ router["/api/v2/users"] = JSONResponse() { environ -> Any in
 
 ## URLParametersReader
 
-`URLParametersReader` wait all data to be received and parse them all at once as URL encoding parameters, like `foo=bar&eggs=spam`. The parameters will be passed as an array key value pairs as `(String, String)`.
+`URLParametersReader` waits all data to be received and parses them all at once as URL encoding parameters, like `foo=bar&eggs=spam`. The parameters will be passed as an array key value pairs as `(String, String)`.
 
 ```Swift
 router["/api/v2/users"] = URLParametersReader() { environ -> Any in
     let input = environ["swsgi.input"] as! SWSGIInput
-    JSONReader.read(input) { params in
+    URLParametersReader.read(input) { params in
         // handle the params object here
     }
 }
