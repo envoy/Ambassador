@@ -215,7 +215,7 @@ router["/api/v2/users"] = JSONResponse() { environ -> Any in
 `URLParametersReader` waits all data to be received and parses them all at once as URL encoding parameters, like `foo=bar&eggs=spam`. The parameters will be passed as an array key value pairs as `(String, String)`.
 
 ```Swift
-router["/api/v2/users"] = URLParametersReader() { environ -> Any in
+router["/api/v2/users"] = JSONResponse() { environ -> Any in
     let input = environ["swsgi.input"] as! SWSGIInput
     URLParametersReader.read(input) { params in
         // handle the params object here
