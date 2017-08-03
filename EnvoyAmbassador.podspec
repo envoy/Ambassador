@@ -1,6 +1,6 @@
 Pod::Spec.new do |spec|
   spec.name         = 'EnvoyAmbassador'
-  spec.version      = '4.0.0'
+  spec.version      = '3.2.0'
   spec.summary      = 'Lightweight web framework in Swift based on SWSGI'
   spec.homepage     = 'https://github.com/envoy/Ambassador'
   spec.license      = 'MIT'
@@ -14,5 +14,5 @@ Pod::Spec.new do |spec|
     tag: "v#{spec.version}"
   }
   spec.source_files = 'Ambassador/*.swift', 'Ambassador/**/*.swift'
-  spec.dependency 'Embassy', '~> 4.0'
+  spec.dependency 'Embassy', '~> 3.2'
 end
