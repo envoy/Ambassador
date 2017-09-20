@@ -69,7 +69,7 @@ open class Router: WebApp {
                 let match = matches[0]
                 var captures = [String]()
                 for rangeIdx in 1 ..< match.numberOfRanges {
-                    captures.append(searchPath.substring(with: match.rangeAt(rangeIdx)))
+                    captures.append(searchPath.substring(with: match.range(at: rangeIdx)))
                 }
                 return (route, captures)
             }
