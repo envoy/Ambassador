@@ -236,7 +236,7 @@ let params = URLParametersReader.parseURLParameters("foo=bar&eggs=spam")
 To install with CocoaPod, add Embassy to your Podfile:
 
 ```
-pod 'EnvoyAmbassador', '~> 3.0'
+pod 'EnvoyAmbassador', '~> 4.0'
 ```
 
 ### Carthage
@@ -244,7 +244,7 @@ pod 'EnvoyAmbassador', '~> 3.0'
 To install with Carthage, add Ambassador to your Cartfile:
 
 ```
-github "envoy/Ambassador" ~> 3.0
+github "envoy/Ambassador" ~> 4.0
 ```
 
 Please notice that you should import `Ambassador` instead of `EnvoyAmbassador`. We use `EnvoyAmbassador` for Cocoapods simply because the name `Ambassador` was already tooken.
