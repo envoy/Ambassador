@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		829EE9B81FB8BCB30087A27D /* DelayResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8346A8C1D0B7A4600717A7D /* DelayResponse.swift */; };
 		AA67329E1DE93849003ABD4E /* Ambassador.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA6732951DE93849003ABD4E /* Ambassador.framework */; };
 		AA6732AC1DE938DC003ABD4E /* DataResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8346A651D0B616C00717A7D /* DataResponse.swift */; };
 		AA6732AD1DE938DC003ABD4E /* JSONResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8346A701D0B633700717A7D /* JSONResponse.swift */; };
@@ -397,6 +398,7 @@
 				AA6732B31DE938DC003ABD4E /* Router.swift in Sources */,
 				AA6732AF1DE938DC003ABD4E /* JSONReader.swift in Sources */,
 				AA6732AD1DE938DC003ABD4E /* JSONResponse.swift in Sources */,
+				829EE9B81FB8BCB30087A27D /* DelayResponse.swift in Sources */,
 				AA6732B11DE938DC003ABD4E /* WebApp.swift in Sources */,
 				AA6732B01DE938DC003ABD4E /* URLParametersReader.swift in Sources */,
 				AA6732AE1DE938DC003ABD4E /* DataReader.swift in Sources */,
