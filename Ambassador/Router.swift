@@ -58,7 +58,6 @@ open class Router: WebApp {
 
     private func matchRoute(to searchPath: String) -> (WebApp, [String])? {
         let startsWithSlash: Bool = searchPath.hasPrefix("/")
-        let startIdxWOSlash: Int = startsWithSlash ? 1 : 0
         
         for (path, route) in routes {
             let regex = try! NSRegularExpression(pattern: path, options: [])
@@ -72,7 +71,12 @@ open class Router: WebApp {
                 let match = matches[0]
                 
                 // Adjust expected start index in case the searchPath starts with a slash
-                guard match.range.lowerBound == startIdxWOSlash else { continue }
+                if startsWithSlash {
+                    guard [0, 1].contains(match.range.lowerBound) else { continue }
+                } else {
+                    guard match.range.lowerBound == 0 else { continue }
+                }
+                
                 var captures: [String] = []
                 
                 for rangeIdx in 1 ..< match.numberOfRanges {
