@@ -62,7 +62,7 @@ open class Router: WebApp {
             let matches = regex.matches(
                 in: searchPath,
                 options: [],
-                range: NSRange(location: 0, length: searchPath.characters.count)
+                range: NSRange(location: 0, length: searchPath.count)
             )
             if !matches.isEmpty {
                 let searchPath = searchPath as NSString

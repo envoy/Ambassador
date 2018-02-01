@@ -54,7 +54,7 @@ class DataResponseTests: XCTestCase {
             items: receivedHeaders ?? []
         )
         XCTAssertEqual(headersDict["Content-Type"], "application/my-format")
-        XCTAssertEqual(Int(headersDict["Content-Length"] ?? "0"), "hello".characters.count)
+        XCTAssertEqual(Int(headersDict["Content-Length"] ?? "0"), "hello".count)
         XCTAssertEqual(headersDict["X-Foo-Bar"], "header")
 
         XCTAssertEqual(receivedData.count, 2)
