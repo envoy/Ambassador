@@ -168,7 +168,7 @@ The available delay options are
 
 ## DataReader
 
-To reas POST body or any other HTTP body from the request, you need to use `swsgi.input` function provided in the `environ` parameter of SWSGI. For example, you can do it like this
+To read POST body or any other HTTP body from the request, you need to use `swsgi.input` function provided in the `environ` parameter of SWSGI. For example, you can do it like this
 
 ```Swift
 router["/api/v2/users"] = JSONResponse() { environ -> Any in
