@@ -5,6 +5,9 @@ import PackageDescription
 
 let package = Package(
     name: "Ambassador",
+    products: [
+        .library(name: "Ambassador", targets: ["Ambassador"]),
+    ],
     dependencies: [
         .package(url: "https://github.com/envoy/Embassy.git", from: "4.0.5")
     ],
