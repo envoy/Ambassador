@@ -57,6 +57,8 @@ open class Router: WebApp {
     }
 
     private func matchRoute(to searchPath: String) -> (WebApp, [String])? {
+        typealias ReturnValue = (WebApp, [String])
+        var routeMatches: [(NSTextCheckingResult, ReturnValue)] = []
         for (path, route) in routes {
             let regex = try! NSRegularExpression(pattern: path, options: [])
             let matches = regex.matches(
@@ -65,15 +67,36 @@ open class Router: WebApp {
                 range: NSRange(location: 0, length: searchPath.count)
             )
             if !matches.isEmpty {
-                let searchPath = NSString(string: searchPath)
                 let match = matches[0]
+                guard match.range.length == searchPath.count else { continue }
+                let searchPath = NSString(string: searchPath)
                 var captures = [String]()
                 for rangeIdx in 1 ..< match.numberOfRanges {
                     captures.append(searchPath.substring(with: match.range(at: rangeIdx)))
                 }
-                return (route, captures)
+                let possibleReturnValue = (route, captures)
+                routeMatches.append((match, possibleReturnValue))
             }
         }
-        return nil
+        
+        // sort the most specific route to top and return the result
+        return routeMatches.sorted(by: { (routeMatch1, routeMatch2) -> Bool in
+            guard let regex1 = routeMatch1.0.regularExpression,
+                let regex2 = routeMatch2.0.regularExpression
+            else {
+                return false
+            }
+
+            // prefer regex without capture groups
+            // skip this decision when number of capture groups are equal
+            if regex1.numberOfCaptureGroups < regex2.numberOfCaptureGroups {
+                return true
+            } else if regex1.numberOfCaptureGroups > regex2.numberOfCaptureGroups {
+                return false
+            }
+
+            // prefer the shorter regex pattern
+            return regex1.pattern.count < regex2.pattern.count
+        }).first?.1
     }
 }
