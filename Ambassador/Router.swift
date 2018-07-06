@@ -65,7 +65,7 @@ open class Router: WebApp {
                 range: NSRange(location: 0, length: searchPath.count)
             )
             if !matches.isEmpty {
-                let searchPath = searchPath as NSString
+                let searchPath = NSString(string: searchPath)
                 let match = matches[0]
                 var captures = [String]()
                 for rangeIdx in 1 ..< match.numberOfRanges {
