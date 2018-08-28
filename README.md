@@ -247,4 +247,22 @@ To install with Carthage, add Ambassador to your Cartfile:
 github "envoy/Ambassador" ~> 4.0
 ```
 
-Please notice that you should import `Ambassador` instead of `EnvoyAmbassador`. We use `EnvoyAmbassador` for Cocoapods simply because the name `Ambassador` was already tooken.
+Please notice that you should import `Ambassador` instead of `EnvoyAmbassador`. We use `EnvoyAmbassador` for Cocoapods simply because the name `Ambassador` was already taken.
+
+### Package Manager
+
+Currently no release has been tagged, but it can be installed from the master branch.
+
+To do this, add the repo to `Package.swift`, like this:
+
+```swift
+import PackageDescription
+
+let package = Package(
+    name: "AmbassadorExample",
+    dependencies: [
+        .package(url: "https://github.com/envoy/Ambassador.git",
+                 .branch("master")),
+    ]
+)
+```
