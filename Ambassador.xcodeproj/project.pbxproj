@@ -7,6 +7,23 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		39C34064214C442900E11D82 /* JSONResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8346A701D0B633700717A7D /* JSONResponse.swift */; };
+		39C34065214C442900E11D82 /* WebApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8346A671D0B619C00717A7D /* WebApp.swift */; };
+		39C34066214C442900E11D82 /* SWGIWebApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = D89711A11D25C0F2003DEB8D /* SWGIWebApp.swift */; };
+		39C34067214C442900E11D82 /* JSONReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8346A6E1D0B62F300717A7D /* JSONReader.swift */; };
+		39C34068214C442900E11D82 /* Router.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8346A721D0B636300717A7D /* Router.swift */; };
+		39C34069214C442900E11D82 /* DelayResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8346A8C1D0B7A4600717A7D /* DelayResponse.swift */; };
+		39C3406A214C442900E11D82 /* DataReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8346A6A1D0B627300717A7D /* DataReader.swift */; };
+		39C3406B214C442900E11D82 /* URLParametersReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8346A6C1D0B62D400717A7D /* URLParametersReader.swift */; };
+		39C3406C214C442900E11D82 /* DataResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8346A651D0B616C00717A7D /* DataResponse.swift */; };
+		39C3407A214C442B00E11D82 /* JSONReaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8346A861D0B73B800717A7D /* JSONReaderTests.swift */; };
+		39C3407B214C442B00E11D82 /* URLParametersReaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8346A881D0B745A00717A7D /* URLParametersReaderTests.swift */; };
+		39C3407C214C442B00E11D82 /* DataReaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8346A841D0B728300717A7D /* DataReaderTests.swift */; };
+		39C3407D214C442B00E11D82 /* JSONResponseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8346A821D0B6DC800717A7D /* JSONResponseTests.swift */; };
+		39C3407E214C442B00E11D82 /* RouterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8346A8A1D0B777700717A7D /* RouterTests.swift */; };
+		39C3407F214C442B00E11D82 /* DataResponseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8346A591D0B5FB300717A7D /* DataResponseTests.swift */; };
+		39C34081214C442B00E11D82 /* Ambassador.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D8346A4A1D0B5FB200717A7D /* Ambassador.framework */; };
+		39C34089214C457100E11D82 /* Embassy.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 39C34088214C457100E11D82 /* Embassy.framework */; };
 		829EE9B81FB8BCB30087A27D /* DelayResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8346A8C1D0B7A4600717A7D /* DelayResponse.swift */; };
 		AA67329E1DE93849003ABD4E /* Ambassador.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA6732951DE93849003ABD4E /* Ambassador.framework */; };
 		AA6732AC1DE938DC003ABD4E /* DataResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8346A651D0B616C00717A7D /* DataResponse.swift */; };
@@ -44,6 +61,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		39C34078214C442B00E11D82 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D8346A411D0B5FB200717A7D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D8346A491D0B5FB200717A7D;
+			remoteInfo = Ambassador;
+		};
 		AA67329F1DE93849003ABD4E /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = D8346A411D0B5FB200717A7D /* Project object */;
@@ -61,6 +85,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		39C34074214C442900E11D82 /* Ambassador.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Ambassador.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		39C34086214C442B00E11D82 /* Ambassador-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Ambassador-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		39C34088214C457100E11D82 /* Embassy.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Embassy.framework; path = Carthage/Build/tvOS/Embassy.framework; sourceTree = "<group>"; };
 		AA6732951DE93849003ABD4E /* Ambassador.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Ambassador.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA67329D1DE93849003ABD4E /* Ambassador-macOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Ambassador-macOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA6732BC1DE9396B003ABD4E /* Embassy.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Embassy.framework; path = ../Embassy/build/Debug/Embassy.framework; sourceTree = "<group>"; };
@@ -88,6 +115,22 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		39C3406D214C442900E11D82 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				39C34089214C457100E11D82 /* Embassy.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		39C34080214C442B00E11D82 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				39C34081214C442B00E11D82 /* Ambassador.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		AA6732911DE93849003ABD4E /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -142,6 +185,8 @@
 				D8346A541D0B5FB300717A7D /* Ambassador-iOSTests.xctest */,
 				AA6732951DE93849003ABD4E /* Ambassador.framework */,
 				AA67329D1DE93849003ABD4E /* Ambassador-macOSTests.xctest */,
+				39C34074214C442900E11D82 /* Ambassador.framework */,
+				39C34086214C442B00E11D82 /* Ambassador-tvOSTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -197,6 +242,7 @@
 		D8346A7F1D0B675C00717A7D /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				39C34088214C457100E11D82 /* Embassy.framework */,
 				AA6732BC1DE9396B003ABD4E /* Embassy.framework */,
 				D8346A7D1D0B674F00717A7D /* Embassy.framework */,
 			);
@@ -222,6 +268,13 @@
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
+		39C3406F214C442900E11D82 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		AA6732921DE93849003ABD4E /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
@@ -239,6 +292,42 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
+		39C34062214C442900E11D82 /* Ambassador-tvOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 39C34071214C442900E11D82 /* Build configuration list for PBXNativeTarget "Ambassador-tvOS" */;
+			buildPhases = (
+				39C34063214C442900E11D82 /* Sources */,
+				39C3406D214C442900E11D82 /* Frameworks */,
+				39C3406F214C442900E11D82 /* Headers */,
+				39C34070214C442900E11D82 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Ambassador-tvOS";
+			productName = Ambassador;
+			productReference = 39C34074214C442900E11D82 /* Ambassador.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		39C34076214C442B00E11D82 /* Ambassador-tvOSTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 39C34083214C442B00E11D82 /* Build configuration list for PBXNativeTarget "Ambassador-tvOSTests" */;
+			buildPhases = (
+				39C34079214C442B00E11D82 /* Sources */,
+				39C34080214C442B00E11D82 /* Frameworks */,
+				39C34082214C442B00E11D82 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				39C34077214C442B00E11D82 /* PBXTargetDependency */,
+			);
+			name = "Ambassador-tvOSTests";
+			productName = AmbassadorTests;
+			productReference = 39C34086214C442B00E11D82 /* Ambassador-tvOSTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		AA6732941DE93849003ABD4E /* Ambassador-macOS */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = AA6732AA1DE93849003ABD4E /* Build configuration list for PBXNativeTarget "Ambassador-macOS" */;
@@ -355,11 +444,27 @@
 				D8346A531D0B5FB300717A7D /* Ambassador-iOSTests */,
 				AA6732941DE93849003ABD4E /* Ambassador-macOS */,
 				AA67329C1DE93849003ABD4E /* Ambassador-macOSTests */,
+				39C34062214C442900E11D82 /* Ambassador-tvOS */,
+				39C34076214C442B00E11D82 /* Ambassador-tvOSTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		39C34070214C442900E11D82 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		39C34082214C442B00E11D82 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		AA6732931DE93849003ABD4E /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -391,6 +496,35 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		39C34063214C442900E11D82 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				39C34064214C442900E11D82 /* JSONResponse.swift in Sources */,
+				39C34065214C442900E11D82 /* WebApp.swift in Sources */,
+				39C34066214C442900E11D82 /* SWGIWebApp.swift in Sources */,
+				39C34067214C442900E11D82 /* JSONReader.swift in Sources */,
+				39C34068214C442900E11D82 /* Router.swift in Sources */,
+				39C34069214C442900E11D82 /* DelayResponse.swift in Sources */,
+				39C3406A214C442900E11D82 /* DataReader.swift in Sources */,
+				39C3406B214C442900E11D82 /* URLParametersReader.swift in Sources */,
+				39C3406C214C442900E11D82 /* DataResponse.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		39C34079214C442B00E11D82 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				39C3407A214C442B00E11D82 /* JSONReaderTests.swift in Sources */,
+				39C3407B214C442B00E11D82 /* URLParametersReaderTests.swift in Sources */,
+				39C3407C214C442B00E11D82 /* DataReaderTests.swift in Sources */,
+				39C3407D214C442B00E11D82 /* JSONResponseTests.swift in Sources */,
+				39C3407E214C442B00E11D82 /* RouterTests.swift in Sources */,
+				39C3407F214C442B00E11D82 /* DataResponseTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		AA6732901DE93849003ABD4E /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -452,6 +586,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		39C34077214C442B00E11D82 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D8346A491D0B5FB200717A7D /* Ambassador-iOS */;
+			targetProxy = 39C34078214C442B00E11D82 /* PBXContainerItemProxy */;
+		};
 		AA6732A01DE93849003ABD4E /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = AA6732941DE93849003ABD4E /* Ambassador-macOS */;
@@ -465,6 +604,83 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		39C34072214C442900E11D82 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
+					"$(PROJECT_DIR)/Carthage/Build/tvOS",
+				);
+				INFOPLIST_FILE = Ambassador/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.envoy.Ambassador;
+				PRODUCT_NAME = Ambassador;
+				SDKROOT = appletvos;
+				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				TARGETED_DEVICE_FAMILY = 3;
+				TVOS_DEPLOYMENT_TARGET = 11.0;
+			};
+			name = Debug;
+		};
+		39C34073214C442900E11D82 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
+					"$(PROJECT_DIR)/Carthage/Build/tvOS",
+				);
+				INFOPLIST_FILE = Ambassador/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.envoy.Ambassador;
+				PRODUCT_NAME = Ambassador;
+				SDKROOT = appletvos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = 3;
+				TVOS_DEPLOYMENT_TARGET = 11.0;
+			};
+			name = Release;
+		};
+		39C34084214C442B00E11D82 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				INFOPLIST_FILE = AmbassadorTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.envoy.Ambassador-iOSTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = appletvos;
+				TARGETED_DEVICE_FAMILY = 3;
+			};
+			name = Debug;
+		};
+		39C34085214C442B00E11D82 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				INFOPLIST_FILE = AmbassadorTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.envoy.Ambassador-iOSTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = appletvos;
+				TARGETED_DEVICE_FAMILY = 3;
+			};
+			name = Release;
+		};
 		AA6732A61DE93849003ABD4E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -727,6 +943,24 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		39C34071214C442900E11D82 /* Build configuration list for PBXNativeTarget "Ambassador-tvOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				39C34072214C442900E11D82 /* Debug */,
+				39C34073214C442900E11D82 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		39C34083214C442B00E11D82 /* Build configuration list for PBXNativeTarget "Ambassador-tvOSTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				39C34084214C442B00E11D82 /* Debug */,
+				39C34085214C442B00E11D82 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		AA6732AA1DE93849003ABD4E /* Build configuration list for PBXNativeTarget "Ambassador-macOS" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
