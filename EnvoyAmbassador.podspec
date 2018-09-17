@@ -9,6 +9,7 @@ Pod::Spec.new do |spec|
   spec.social_media_url   = 'https://twitter.com/fangpenlin'
   spec.ios.deployment_target = '8.0'
   spec.osx.deployment_target = '10.10'
+  spec.tvos.deployment_target = '11.0'
   spec.source       = {
     git: 'https://github.com/envoy/Ambassador.git',
     tag: "v#{spec.version}"
