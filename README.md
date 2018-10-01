@@ -251,8 +251,6 @@ Please notice that you should import `Ambassador` instead of `EnvoyAmbassador`. 
 
 ### Package Manager
 
-Currently no release has been tagged, but it can be installed from the master branch.
-
 To do this, add the repo to `Package.swift`, like this:
 
 ```swift
@@ -262,7 +260,7 @@ let package = Package(
     name: "AmbassadorExample",
     dependencies: [
         .package(url: "https://github.com/envoy/Ambassador.git",
-                 .branch("master")),
+                 from: "4.0.0"),
     ]
 )
 ```
