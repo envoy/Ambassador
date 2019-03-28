@@ -8,9 +8,9 @@ env:
     - IOS_FRAMEWORK_SCHEME="Ambassador-iOS"
     - IOS_SDK=iphonesimulator12.2
     - MACOS_FRAMEWORK_SCHEME="Ambassador-macOS"
-    - MACOS_SDK=macosx10.13
+    - MACOS_SDK=macosx10.14
   matrix:
-    - DESTINATION="OS=11.0,name=iPhone 6S"     SCHEME="$IOS_FRAMEWORK_SCHEME"     SDK="$IOS_SDK"
+    - DESTINATION="OS=12.2,name=iPhone 6S"     SCHEME="$IOS_FRAMEWORK_SCHEME"     SDK="$IOS_SDK"
     - DESTINATION="arch=x86_64"                SCHEME="$MACOS_FRAMEWORK_SCHEME"   SDK="$MACOS_SDK"
 
 before_install:
