@@ -6,7 +6,7 @@ env:
     - LANG=en_US.UTF-8
     - WORKSPACE=Ambassador.xcworkspace
     - IOS_FRAMEWORK_SCHEME="Ambassador-iOS"
-    - IOS_SDK=iphonesimulator11.0
+    - IOS_SDK=iphonesimulator12.2
     - MACOS_FRAMEWORK_SCHEME="Ambassador-macOS"
     - MACOS_SDK=macosx10.13
   matrix:
