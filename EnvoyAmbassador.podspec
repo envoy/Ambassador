@@ -1,6 +1,6 @@
 Pod::Spec.new do |spec|
   spec.name         = 'EnvoyAmbassador'
-  spec.version      = '4.0.5'
+  spec.version      = '4.1.0'
   spec.summary      = 'Lightweight web framework in Swift based on SWSGI'
   spec.homepage     = 'https://github.com/envoy/Ambassador'
   spec.license      = 'MIT'
@@ -10,6 +10,7 @@ Pod::Spec.new do |spec|
   spec.ios.deployment_target = '8.0'
   spec.osx.deployment_target = '10.10'
   spec.tvos.deployment_target = '11.0'
+  spec.swift_version = '5.0'
   spec.source       = {
     git: 'https://github.com/envoy/Ambassador.git',
     tag: "v#{spec.version}"
