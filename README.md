@@ -189,23 +189,39 @@ It's not too hard to do so, however, the data comes in as stream, like
 In most cases, you won't like to handle the data stream manually. To wait all data received and process them at once, you can use `DataReader`. For instance
 
 ```Swift
-router["/api/v2/users"] = JSONResponse() { environ -> Any in
+router["/api/v2/users"] = DataResponse() { (environ, sendData) in
     let input = environ["swsgi.input"] as! SWSGIInput
+
+    guard environ["HTTP_CONTENT_LENGTH"] != nil else {
+        // handle error
+        sendData(Data("error".utf8))
+        return
+    }
+
     DataReader.read(input) { data in
         // handle the whole data here
+        sendData(Data("hello world".utf8))
     }
 }
 ```
 
 ## JSONReader
 
-Like `DataReader`, besides reading the whole chunk of data, `JSONReader` also parses it as JSON format. Herer's how you do
+Like `DataReader`, besides reading the whole chunk of data, `JSONReader` also parses it as JSON format. Here is how you do
 
 ```Swift
-router["/api/v2/users"] = JSONResponse() { environ -> Any in
+router["/api/v2/users"] = JSONResponse() { (environ, sendJSON) in
     let input = environ["swsgi.input"] as! SWSGIInput
+
+    guard environ["HTTP_CONTENT_LENGTH"] != nil else {
+        // handle error
+        sendJSON([])
+        return
+    }
+
     JSONReader.read(input) { json in
         // handle the json object here
+        sendJSON([])
     }
 }
 ```
@@ -215,10 +231,18 @@ router["/api/v2/users"] = JSONResponse() { environ -> Any in
 `URLParametersReader` waits all data to be received and parses them all at once as URL encoding parameters, like `foo=bar&eggs=spam`. The parameters will be passed as an array key value pairs as `(String, String)`.
 
 ```Swift
-router["/api/v2/users"] = JSONResponse() { environ -> Any in
+router["/api/v2/users"] = JSONResponse() { (environ, sendJSON) in
     let input = environ["swsgi.input"] as! SWSGIInput
+
+    guard environ["HTTP_CONTENT_LENGTH"] != nil else {
+        // handle error
+        sendJSON([])
+        return
+    }
+
     URLParametersReader.read(input) { params in
         // handle the params object here
+        sendJSON([])
     }
 }
 ```
