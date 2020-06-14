@@ -58,6 +58,57 @@ class RouterTests: XCTestCase {
         XCTAssertEqual(receivedData.last?.count, 0)
     }
 
+    func test2Paths() {
+        let router = Router()
+        router["/path/to/1"] = DataResponse() { environ -> Data in
+            return Data("first".utf8)
+        }
+        
+        router["/path/to"] = DataResponse() { environ -> Data in
+            return Data("second".utf8)
+        }
+        
+        var receivedStatus: [String] = []
+        let startResponse = { (status: String, headers: [(String, String)]) in
+            receivedStatus.append(status)
+        }
+        
+        var receivedData: [Data] = []
+        let sendBody = { (data: Data) in
+            receivedData.append(data)
+        }
+        let environ: [String: Any] = [
+            "REQUEST_METHOD": "GET",
+            "SCRIPT_NAME": "",
+            "PATH_INFO": "/",
+        ]
+        router.app(
+            environ,
+            startResponse: startResponse,
+            sendBody: sendBody
+        )
+        XCTAssertEqual(receivedStatus.count, 1)
+        XCTAssertEqual(receivedStatus.last, "404 Not found")
+        XCTAssertEqual(receivedData.count, 1)
+        XCTAssertEqual(receivedData.last?.count, 0)
+        
+        let environ2: [String: Any] = [
+            "REQUEST_METHOD": "GET",
+            "SCRIPT_NAME": "",
+            "PATH_INFO": "/path/to/1",
+        ]
+        router.app(
+            environ2,
+            startResponse: startResponse,
+            sendBody: sendBody
+        )
+        XCTAssertEqual(receivedStatus.count, 2)
+        XCTAssertEqual(receivedStatus.last, "200 OK")
+        XCTAssertEqual(receivedData.count, 3)
+        XCTAssertEqual(String(bytes: receivedData[1], encoding: String.Encoding.utf8), "first")
+        XCTAssertEqual(receivedData.last?.count, 0)
+    }
+    
     func testRegularExpressionRouting() {
         let router = Router()
         var receivedCaptures: [String]?

@@ -57,7 +57,13 @@ open class Router: WebApp {
     }
 
     private func matchRoute(to searchPath: String) -> (WebApp, [String])? {
-        for (path, route) in routes {
+        if let handler = routes[searchPath] {
+            return (handler, [searchPath])
+        }
+        let sortedRoutes = routes.sorted { (a, b) -> Bool in
+            a.key.count > b.key.count
+        }
+        for (path, route) in sortedRoutes {
             let regex = try! NSRegularExpression(pattern: path, options: [])
             let matches = regex.matches(
                 in: searchPath,
