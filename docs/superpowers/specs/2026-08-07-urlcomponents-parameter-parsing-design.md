@@ -177,10 +177,13 @@ which is untouched.
   `addingPercentEncoding` call in rule 3 uses a force-unwrap, consistent with
   the file's existing style.
 
-## Risk
+## Platform assumption
 
-Every measurement above comes from Swift 6.3.2 / macOS 26.5 Foundation.
-`normalized(_:)` is deterministic pure Swift and immune to platform variation,
-but the `URLComponents` half is not — swift-corelibs-foundation on Linux has
-historically diverged on query parsing, and Embassy supports Linux. The
-expanded test suite is the guard. Linux was not verified.
+Apple platforms only. Linux is explicitly out of scope for this change.
+
+This matters because every measurement above comes from Swift 6.3.2 / macOS 26.5
+Foundation. `normalized(_:)` is deterministic pure Swift and immune to platform
+variation, but the `URLComponents` half is not — swift-corelibs-foundation has
+historically diverged on query parsing. If Ambassador is ever run on Linux, the
+`URLComponents` behavior recorded here must be re-measured there; the expanded
+test suite is what would surface a divergence.
