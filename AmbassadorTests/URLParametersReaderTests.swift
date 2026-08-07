@@ -147,4 +147,13 @@ class URLParametersReaderTests: XCTestCase {
     func testParseURLParametersLonePercentStillDecodesRemainingEscapes() {
         assertParams("x=%%20", [("x", "% ")])
     }
+
+    /// Escapes that are valid hex but not valid UTF-8 are preserved verbatim
+    /// rather than decoded to nothing — including in keys.
+    func testParseURLParametersPreservesNonUTF8Escapes() {
+        assertParams("foo=%FF", [("foo", "%FF")])
+        assertParams("%FF=a", [("%FF", "a")])
+        assertParams("a=%E4%BD", [("a", "%E4%BD")])
+        assertParams("k=%FE%FF&ok=%20", [("k", "%FE%FF"), ("ok", " ")])
+    }
 }
