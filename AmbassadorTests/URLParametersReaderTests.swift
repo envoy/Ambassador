@@ -156,4 +156,16 @@ class URLParametersReaderTests: XCTestCase {
         assertParams("a=%E4%BD", [("a", "%E4%BD")])
         assertParams("k=%FE%FF&ok=%20", [("k", "%FE%FF"), ("ok", " ")])
     }
+
+    /// Pins a known limitation rather than desirable behavior. A field holding *both* an
+    /// undecodable escape and a character that isn't legal in a query has nothing to fall
+    /// back to but the normalized text, so the normalization's own escaping shows through.
+    /// If a future change makes these decode literally, that's an improvement — update
+    /// these expectations rather than reverting it.
+    func testParseURLParametersNonUTF8EscapesLeakNormalization() {
+        assertParams("a=%FF b", [("a", "%FF%20b")])
+        assertParams("a=café%FF", [("a", "caf%C3%A9%FF")])
+        assertParams("a=b#c%FF", [("a", "b%23c%FF")])
+        assertParams("x y%FF=1", [("x%20y%FF", "1")])
+    }
 }

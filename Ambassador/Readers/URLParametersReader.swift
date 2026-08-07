@@ -88,6 +88,19 @@ public enum URLParametersReader {
     /// Parse given string as URL parameters
     ///  - Parameter string: URL encoded parameter string to parse
     ///  - Returns: array of (key, value) pairs of URL encoded parameters
+    ///
+    /// Known limitation: when a field's escapes don't decode as UTF-8 there is nothing to
+    /// fall back to but the normalized text, so characters `normalized(_:)` had to encode
+    /// come back percent-escaped rather than literal:
+    ///
+    ///     "a=%FF b"   -> ("a", "%FF%20b")   not ("a", "%FF b")
+    ///     "a=café%FF" -> ("a", "caf%C3%A9%FF")
+    ///
+    /// This needs a field containing *both* an undecodable escape and a character that
+    /// isn't legal in a query, so it doesn't arise for well-formed bodies. Fixing it means
+    /// decoding at the byte level — more hand-rolled parsing than this type set out to
+    /// remove — so it's recorded here rather than fixed. See
+    /// `testParseURLParametersNonUTF8EscapesLeakNormalization`.
     public static func parseURLParameters(_ string: String) -> [(String, String)] {
         guard let components = URLComponents(string: "?" + normalized(string)),
             let items = components.percentEncodedQueryItems else {
