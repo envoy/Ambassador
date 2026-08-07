@@ -59,4 +59,81 @@ class URLParametersReaderTests: XCTestCase {
         XCTAssertEqual(logged.count, 1)
         XCTAssertTrue(logged[0].hasPrefix("Ambassador: URLParametersReader failed to parse request body (2 bytes): "))
     }
+
+    // MARK: - Helpers
+
+    /// Tuples aren't Equatable, so compare pair-by-pair and report which pair diverged.
+    private func assertParams(
+        _ input: String,
+        _ expected: [(String, String)],
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) {
+        let actual = URLParametersReader.parseURLParameters(input)
+        XCTAssertEqual(
+            actual.count,
+            expected.count,
+            "pair count for \(input.debugDescription)",
+            file: file,
+            line: line
+        )
+        for (index, pair) in zip(actual, expected).enumerated() {
+            XCTAssertEqual(
+                pair.0.0,
+                pair.1.0,
+                "key \(index) for \(input.debugDescription)",
+                file: file,
+                line: line
+            )
+            XCTAssertEqual(
+                pair.0.1,
+                pair.1.1,
+                "value \(index) for \(input.debugDescription)",
+                file: file,
+                line: line
+            )
+        }
+    }
+
+    func testParseURLParametersPreservedBehavior() {
+        assertParams("foo=bar&eggs=spam", [("foo", "bar"), ("eggs", "spam")])
+        assertParams("foo%5Bbar%5D=eggs%20spam", [("foo[bar]", "eggs spam")])
+
+        // A key with no `=` yields an empty value.
+        assertParams("foo", [("foo", "")])
+        assertParams("foo=", [("foo", "")])
+        assertParams("=bar", [("", "bar")])
+
+        // Only the first `=` is a delimiter.
+        assertParams("foo=a=b", [("foo", "a=b")])
+
+        // `+` is NOT form-decoded to a space.
+        assertParams("a+b=c+d", [("a+b", "c+d")])
+
+        // Duplicate keys keep their order.
+        assertParams("foo=a&foo=b", [("foo", "a"), ("foo", "b")])
+
+        // Empty segments produce empty pairs.
+        assertParams("foo=a&&b=c", [("foo", "a"), ("", ""), ("b", "c")])
+        assertParams("foo=a&b", [("foo", "a"), ("b", "")])
+
+        // Non-ASCII, both escaped and raw.
+        assertParams("foo=caf%C3%A9", [("foo", "café")])
+        assertParams("foo=café", [("foo", "café")])
+        assertParams("foo=👍", [("foo", "👍")])
+
+        // Malformed escapes are left alone rather than dropped.
+        assertParams("foo=%ZZ", [("foo", "%ZZ")])
+        assertParams("foo=100%", [("foo", "100%")])
+        assertParams("foo=a%2", [("foo", "a%2")])
+
+        // `#` and `?` are data in a form body, not URL delimiters.
+        assertParams("foo=a#b", [("foo", "a#b")])
+        assertParams("a=1&b=2#frag", [("a", "1"), ("b", "2#frag")])
+        assertParams("foo=a?b", [("foo", "a?b")])
+
+        // An unencoded character must not disable decoding for the rest of the body.
+        assertParams("a b=c%20d", [("a b", "c d")])
+        assertParams("foo=a b&x%5By%5D=z", [("foo", "a b"), ("x[y]", "z")])
+    }
 }
