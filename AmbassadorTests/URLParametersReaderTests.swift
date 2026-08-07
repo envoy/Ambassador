@@ -120,4 +120,15 @@ class URLParametersReaderTests: XCTestCase {
         assertParams("a b=c%20d", [("a b", "c d")])
         assertParams("foo=a b&x%5By%5D=z", [("foo", "a b"), ("x[y]", "z")])
     }
+
+    /// An empty body has no parameters. The old parser reported a phantom `("", "")`.
+    func testParseURLParametersEmptyString() {
+        assertParams("", [])
+    }
+
+    /// A stray `%` no longer discards decoding for the whole field — only that
+    /// character is treated as literal. The old parser returned `("x", "%%20")`.
+    func testParseURLParametersLonePercentStillDecodesRemainingEscapes() {
+        assertParams("x=%%20", [("x", "% ")])
+    }
 }
