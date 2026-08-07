@@ -67,3 +67,4 @@ fastlane/test_output
 
 xcuserdata
 Carthage
+.swiftpm/xcode/package.xcworkspace/contents.xcworkspacedata
