@@ -34,9 +34,9 @@ Last released version: `v4.0.5`.
 | P1 | `DelayResponse` defaults to a 0.1–3 s random delay | Speed | Depends on D1 | deferred |
 | P2 | Body-parse failures hang until client timeout | Speed | No | in progress |
 | P3 | Router recompiles every regex on every request | Speed | No | in progress |
-| A1 | Typed environ accessors and environ-taking reader overloads | API | No (additive) | proposed |
+| A1 | Typed environ accessors and environ-taking reader overloads | API | No (additive) | in progress |
 | A2 | Keyed result from `URLParametersReader` | API | No (additive) | proposed |
-| A3 | `.delayed(...)` modifier on `WebApp` | API | No (additive) | proposed |
+| A3 | `.delayed(...)` modifier on `WebApp` | API | No (additive) | in progress |
 | A4 | `JSONResponse(json:)` / `Encodable` convenience | API | No (additive) | proposed |
 | A5 | Derive default status message from status code | API | Behavior | proposed |
 | C1 | Typealiases for the SWSGI callback signatures | Consolidation | No | proposed |
@@ -44,6 +44,7 @@ Last released version: `v4.0.5`.
 | C3 | Shared decode helper for readers; readers become `enum`s | Consolidation | Minor | proposed |
 | C4 | `DelayResponse` schedules one flush instead of three timers | Consolidation | No | proposed |
 | C5 | Small cleanups (`SWGIWebApp` rename, doc fixes, IUO) | Consolidation | No (with deprecation) | proposed |
+| C6 | SwiftLint config is never loaded (`.swiftlint.yaml` vs `.swiftlint.yml`) | Consolidation | No | proposed |
 | X1 | Make `WebApp` `Sendable` / add an `async` API | — | Yes | declined for now |
 
 ## Bugs
@@ -140,7 +141,16 @@ Last released version: `v4.0.5`.
   `JSONReader+Extension.swift` and `Dictionary+Getters.swift` to paper over this.
 - **Proposal:** Extension on `[String: Any]` with `swsgiInput`, `pathInfo`, `requestMethod`,
   `queryString`, `routerCaptures`; overloads such as `JSONReader.read(environ) { ... }`.
-- **Status:** proposed
+- **Naming decision:** envoy-ipad's `Dictionary+Getters.swift` already defines `requestMethod`,
+  `queryString`, `httpAuthorization` on `[String: Any]`, and `JSONReader+Extension` defines
+  `JSONReader.read(environ:)`. Same-named public members would make envoy-ipad's call sites
+  ambiguous, so Ambassador's accessors live under one property: `environ.swsgi.*`.
+- **Implementation:** `SWSGIEnvironment` struct (`Ambassador/SWSGIEnvironment.swift`) with `input`,
+  `requestMethod`, `pathInfo`, `queryString`, `contentType`, `routerCaptures`, `eventLoop`,
+  `header(_:)`, and the raw `environ`. `DataReader`/`JSONReader`/`URLParametersReader` gain
+  unlabeled `read(_ environ:)` overloads (distinct from envoy-ipad's `read(environ:)`). Router and
+  DelayResponse use the new accessors internally.
+- **Status:** in progress
 
 ### A2 — Keyed result from `URLParametersReader`
 - **Evidence:** `MultiDictionary<String, String, NoOpKeyTransform<String>>(items: params)` ×9.
@@ -151,7 +161,10 @@ Last released version: `v4.0.5`.
 - **Evidence:** envoy-ipad's `DelayResponse+minMax.swift` adds its own factories.
 - **Proposal:** `extension WebApp { func delayed(_ delay: DelayResponse.Delay = ...) -> DelayResponse }`,
   so call sites read `JSONResponse(...).delayed(.delay(seconds: 0.05))`.
-- **Status:** proposed
+- **Implementation:** Default is the same `.random(min: 0.1, max: 3)` literal as `DelayResponse.init`.
+  A shared `defaultDelay` constant was left out on purpose: it would have to be public (it's used in
+  a default argument) and would pre-empt P1's override API.
+- **Status:** in progress
 
 ### A4 — `JSONResponse(json:)` / `Encodable` convenience
 - **Evidence:** `handler: ({ _ -> Any in ... })` ×12. The annotation is needed because the two
@@ -199,6 +212,15 @@ Last released version: `v4.0.5`.
 - Replace `var delayTime: TimeInterval!` with a `let` built from a `switch` expression.
 - **Status:** proposed
 
+### C6 — SwiftLint config is never loaded
+- **Problem:** SwiftLint auto-discovers only `.swiftlint.yml`. The repo's file is `.swiftlint.yaml`,
+  so its rules (disabling `force_cast`, `force_try`, `todo`; excluding `Carthage`/`Pods`/`fastlane`)
+  are ignored unless `--config .swiftlint.yaml` is passed. Plain `swiftlint` reports every `as!`
+  as an error.
+- **Proposal:** Rename to `.swiftlint.yml` and drop the stale `Carthage`/`Pods`/`fastlane` excludes.
+  Update the CLAUDE.md lint note.
+- **Status:** proposed
+
 ## Declined / deferred
 
 ### X1 — Make `WebApp` `Sendable` / add an `async` API
@@ -212,6 +234,7 @@ Last released version: `v4.0.5`.
 | PR | Items | Status | Link |
 |---|---|---|---|
 | 1 | B1, B2, B3, B5, P3, P2 — Router fixes, delay RNG fix, reader failure logging | in progress | |
+| 2 | A1, A3 — `environ.swsgi` accessors, environ reader overloads, `.delayed()`; README fixes | in progress | |
 
 ## Consumer follow-ups (envoy-ipad)
 
@@ -222,3 +245,10 @@ Changes to make in envoy-ipad once the corresponding items ship:
   `{ XCTFail("Request body wasn't valid JSON: \($0)") }` so a malformed body fails the test with
   a reason instead of only timing out. Requires `import XCTest` in that file. Without this change,
   the stderr log from Ambassador is the only signal.
+- **A1:** replace `environ["swsgi.input"] as! SWSGIInput` (×12) with `environ.swsgi.input`, or pass
+  `environ` straight to the reader. Once nothing uses them, delete `JSONReader+Extension.swift` and
+  the `requestMethod`/`queryString` getters in `Dictionary+Getters.swift` in favor of
+  `environ.swsgi.*` (`httpAuthorization` → `environ.swsgi.header("Authorization")`). Optional;
+  nothing breaks if left as is.
+- **A3:** `DelayResponse+minMax.swift` can go; `DelayResponse.response(for: app, withMinDelay: a,
+  andMaxDelay: b)` → `app.delayed(.random(min: a, max: b))`. Optional.

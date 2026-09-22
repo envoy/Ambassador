@@ -78,12 +78,34 @@ You can also map URL with regular expression. For example, you can write this
 ```Swift
 let router = Router()
 router["/api/v2/users/([0-9]+)"] = DelayResponse(JSONResponse(handler: { environ -> Any in
-    let captures = environ["ambassador.router_captures"] as! [String]
+    let captures = environ.swsgi.routerCaptures
     return ["id": captures[0], "name": "john"]
 }))
 ```
 
-Then all requests with URL matching `/api/v2/users/([0-9]+)` regular expression will be routed here. For all match groups, they will be passed into environment with key `ambassador.router_captures` as an array of string.
+Then all requests with URL matching `/api/v2/users/([0-9]+)` regular expression will be routed here. For all match groups, they will be passed into environment with key `ambassador.router_captures` as an array of string, readable as `environ.swsgi.routerCaptures`.
+
+Matching is not anchored: `/api/v2/users` also matches `/api/v2/users/1`. Use `^` and `$` to match the whole path. When several patterns match, which one wins is undefined. To remove a route, assign `nil`:
+
+```Swift
+router["/api/v2/users"] = nil
+```
+
+## Reading the environ
+
+`environ.swsgi` gives typed access to the SWSGI environ, so you don't have to cast its values yourself:
+
+```Swift
+router["/api/v2/users"] = JSONResponse(handler: { environ -> Any in
+    let method = environ.swsgi.requestMethod    // "GET"
+    let path = environ.swsgi.pathInfo           // "/api/v2/users"
+    let query = environ.swsgi.queryString       // "page=2", without the "?"
+    let token = environ.swsgi.header("Authorization")
+    return ["method": method ?? "", "path": path ?? ""]
+})
+```
+
+The available accessors are `input`, `requestMethod`, `pathInfo`, `queryString`, `contentType`, `routerCaptures`, `eventLoop`, and `header(_:)`. The raw dictionary is still available as `environ.swsgi.environ`.
 
 
 ## DataResponse
@@ -156,8 +178,18 @@ router["/api/v2/users"] = DelayResponse(JSONResponse(handler: { _ -> Any in
         ["id": "01", "name": "john"],
         ["id": "02", "name": "tom"]
     ]
-}), delay: .delay(10))
+}), delay: .delay(seconds: 10))
 ```
+
+You can also call `.delayed(...)` on any response, which reads left to right:
+
+```Swift
+router["/api/v2/users"] = JSONResponse(handler: { _ -> Any in
+    return []
+}).delayed(.delay(seconds: 0.05))
+```
+
+`.delayed()` with no argument uses the same random default as `DelayResponse`.
 
 The available delay options are
 
@@ -171,8 +203,8 @@ The available delay options are
 To read POST body or any other HTTP body from the request, you need to use `swsgi.input` function provided in the `environ` parameter of SWSGI. For example, you can do it like this
 
 ```Swift
-router["/api/v2/users"] = JSONResponse() { environ -> Any in
-    let input = environ["swsgi.input"] as! SWSGIInput
+router["/api/v2/users"] = JSONResponse() { environ, sendJSON in
+    let input = environ.swsgi.input
     input { data in
         // handle the data stream here
     }
@@ -189,36 +221,40 @@ It's not too hard to do so, however, the data comes in as stream, like
 In most cases, you won't like to handle the data stream manually. To wait all data received and process them at once, you can use `DataReader`. For instance
 
 ```Swift
-router["/api/v2/users"] = JSONResponse() { environ -> Any in
-    let input = environ["swsgi.input"] as! SWSGIInput
-    DataReader.read(input) { data in
+router["/api/v2/users"] = JSONResponse() { environ, sendJSON in
+    DataReader.read(environ) { data in
         // handle the whole data here
+        sendJSON(["size": data.count])
     }
 }
 ```
+
+Each reader accepts either the whole `environ` or its `SWSGIInput` (`environ.swsgi.input`).
 
 ## JSONReader
 
 Like `DataReader`, besides reading the whole chunk of data, `JSONReader` also parses it as JSON format. Herer's how you do
 
 ```Swift
-router["/api/v2/users"] = JSONResponse() { environ -> Any in
-    let input = environ["swsgi.input"] as! SWSGIInput
-    JSONReader.read(input) { json in
+router["/api/v2/users"] = JSONResponse() { environ, sendJSON in
+    JSONReader.read(environ) { json in
         // handle the json object here
+        sendJSON(["code": "ok"])
     }
 }
 ```
+
+If the body isn't valid JSON, `handler` isn't called and no response is sent. Pass `errorHandler` to handle that case, for example to fail the test. Without one, the failure is logged to standard error.
 
 ## URLParametersReader
 
 `URLParametersReader` waits all data to be received and parses them all at once as URL encoding parameters, like `foo=bar&eggs=spam`. The parameters will be passed as an array key value pairs as `(String, String)`.
 
 ```Swift
-router["/api/v2/users"] = JSONResponse() { environ -> Any in
-    let input = environ["swsgi.input"] as! SWSGIInput
-    URLParametersReader.read(input) { params in
+router["/api/v2/users"] = JSONResponse() { environ, sendJSON in
+    URLParametersReader.read(environ) { params in
         // handle the params object here
+        sendJSON(["code": "ok"])
     }
 }
 ```

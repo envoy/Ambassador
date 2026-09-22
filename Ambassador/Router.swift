@@ -50,7 +50,7 @@ open class Router: WebApp {
 
         if let (webApp, captures) = matchRoute(to: path) {
             var environ = environ
-            environ["ambassador.router_captures"] = captures
+            environ[SWSGIEnvironment.routerCapturesKey] = captures
             webApp.app(environ, startResponse: startResponse, sendBody: sendBody)
             return
         }

@@ -44,7 +44,7 @@ public struct DelayResponse: WebApp {
         case .random(let min, let max):
             delayTime = TimeInterval.random(in: min ... max)
         }
-        let loop = environ["embassy.event_loop"] as! EventLoop
+        let loop = environ.swsgi.eventLoop!
 
         let delayedStartResponse = { (status: String, headers: [(String, String)]) in
             loop.call(withDelay: delayTime) {
@@ -57,5 +57,13 @@ public struct DelayResponse: WebApp {
             }
         }
         delayedApp.app(environ, startResponse: delayedStartResponse, sendBody: delayedSendBody)
+    }
+}
+
+extension WebApp {
+    /// Wrap this app in a `DelayResponse`, e.g. `JSONResponse(...).delayed(.delay(seconds: 0.05))`.
+    /// The default delay matches `DelayResponse.init`.
+    public func delayed(_ delay: DelayResponse.Delay = .random(min: 0.1, max: 3)) -> DelayResponse {
+        DelayResponse(self, delay: delay)
     }
 }

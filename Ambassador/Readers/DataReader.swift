@@ -26,6 +26,13 @@ public struct DataReader {
         }
     }
 
+    /// Read the request body from `environ["swsgi.input"]` and pass it to handler
+    ///  - Parameter environ: the SWSGI environ of the request
+    ///  - Parameter handler: the handler to be called when finish reading all data
+    public static func read(_ environ: [String: Any], handler: @escaping ((Data) -> Void)) {
+        read(environ.swsgi.input, handler: handler)
+    }
+
     /// Report a body that a reader couldn't decode when the caller passed no `errorHandler`.
     /// The caller's handler isn't called, so no response is sent and the request hangs until the
     /// client times out; this message is the only trace of why.
