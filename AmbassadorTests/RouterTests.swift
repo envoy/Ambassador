@@ -141,7 +141,10 @@ class RouterTests: XCTestCase {
     }
 
     func testConcurrentRegistrationAndDispatch() {
-        let router = Router()
+        // Router isn't Sendable (it's an open class), but consumers share it across threads on
+        // purpose: routes are registered from the test thread while the event loop dispatches.
+        // This test exercises exactly that, so opt out of the compile-time check.
+        nonisolated(unsafe) let router = Router()
         router["^/stable$"] = DataResponse()
 
         DispatchQueue.concurrentPerform(iterations: 1000) { index in
