@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Ambassador is a lightweight Swift web framework built on **SWSGI** (Swift Web Server Gateway Interface), the protocol defined by its sibling project [Embassy](https://github.com/envoy/Embassy). Its primary purpose is mocking HTTP APIs in UI/automation tests. The module is `Ambassador`; consumers `import Ambassador`.
 
-**Swift Package Manager is the only supported distribution.** CocoaPods and Carthage are no longer supported. `EnvoyAmbassador.podspec`, `Cartfile`, and `Cartfile.resolved` are dead artifacts still sitting in the tree — do not treat them as sources of truth for versioning, deployment targets, or the Swift version, and don't update them when changing the package. (The pod name `EnvoyAmbassador` existed only because `Ambassador` was taken on CocoaPods; that distinction is now irrelevant.) `README.md` still documents both installation paths and is stale on this point.
+**Swift Package Manager is the only supported distribution.** CocoaPods and Carthage are no longer supported. `EnvoyAmbassador.podspec`, `Cartfile`, and `Cartfile.resolved` have been removed; don't reintroduce them. (The pod name `EnvoyAmbassador` existed only because `Ambassador` was taken on CocoaPods; that distinction is now irrelevant.) `README.md` still documents both installation paths and is stale on this point.
 
 Embassy is the *only* dependency, and it supplies the HTTP server, event loop, `SWSGI`/`SWSGIInput` types, and `MultiDictionary`. Ambassador itself contains no socket or HTTP-parsing code.
 
@@ -68,4 +68,4 @@ Routes are keyed by string, but every key is compiled as an `NSRegularExpression
 - Response and reader types are `struct`s conforming to `WebApp`/static-only namespaces; `Router` is the lone `open class`.
 - The library is intentionally force-unwrap-heavy (`as!`, `try!`) on environ keys and JSON serialization — mocking-in-tests is the use case, and failing loudly is the design choice.
 - Tests are XCTest, one file per type in `AmbassadorTests/`, and drive `app(_:startResponse:sendBody:)` directly with a hand-built `environ` dictionary rather than starting a real server. New tests added to that directory are picked up by `swift test` automatically. Swift Testing (`@Test`/`#expect`) is a reasonable choice for new test files, but don't churn the existing XCTest ones without reason.
-- Public API changes need updating in `README.md`, which doubles as the API docs. Releases are cut as git tags `v<version>`, which is what SPM consumers resolve against; the podspec version is no longer meaningful.
+- Public API changes need updating in `README.md`, which doubles as the API docs. Releases are cut as git tags `v<version>`, which is what SPM consumers resolve against.
