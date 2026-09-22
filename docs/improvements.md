@@ -31,8 +31,8 @@ Last released version: `v4.0.5`.
 | B3 | Assigning `nil` to a route crashes | Bug | No | in progress |
 | B4 | `URLParametersReader` doesn't decode `+` as space | Bug | Behavior | declined |
 | B5 | Linux `DelayResponse` reseeds the RNG on every call | Bug | No | in progress |
-| P1 | `DelayResponse` defaults to a 0.1–3 s random delay | Speed | Depends on D1 | proposed |
-| P2 | Body-parse failures hang until client timeout | Speed | Behavior | proposed |
+| P1 | `DelayResponse` defaults to a 0.1–3 s random delay | Speed | Depends on D1 | deferred |
+| P2 | Body-parse failures hang until client timeout | Speed | No | in progress |
 | P3 | Router recompiles every regex on every request | Speed | No | in progress |
 | A1 | Typed environ accessors and environ-taking reader overloads | API | No (additive) | proposed |
 | A2 | Keyed result from `URLParametersReader` | API | No (additive) | proposed |
@@ -104,16 +104,27 @@ Last released version: `v4.0.5`.
     on the delay to observe loading states.
   - (b) Keep the default, add a process-wide override (e.g. `DelayResponse.defaultDelay`, or an
     environment variable) so CI can run without the waits.
-- **Status:** proposed
+- **Status:** deferred — design sketched (lock-guarded `DelayResponse.defaultDelay`, read at request time); parked for now
 
 ### P2 — Body-parse failures hang until client timeout
 - **Where:** `JSONReader.read`, `URLParametersReader.read`.
 - **Problem:** When decoding fails and no `errorHandler` is passed, the error is swallowed and no
-  response is sent. The client waits for the URLSession timeout (60 s by default). Only 2 of ~24
-  reader call sites in envoy-ipad pass an `errorHandler`.
-- **Proposal:** Make failures visible by default. Options: fail loudly (`assertionFailure` or log),
-  or give readers access to `startResponse` so they can reply 400. Pick one during design.
-- **Status:** proposed
+  response is sent. The client waits for the URLSession timeout (60 s by default). None of
+  envoy-ipad's 9 `JSONReader` call sites pass an `errorHandler` (its `JSONReader+Extension` defaults
+  it to `nil`); each sends its response and fulfills its test expectation only from the success
+  handler.
+- **Constraint:** Existing tests must not see a different response. Any response Ambassador sends on
+  a parse failure (400, 500, empty 200) is a behavior change, so the default must be diagnostic only.
+- **Decision:** Diagnostic only, no change on the wire. When a reader fails and no `errorHandler`
+  was passed, it writes one line to stderr:
+  `Ambassador: JSONReader failed to parse request body (N bytes): <error>. Handler not called; no response will be sent.`
+  Consumers that want the test to fail fast pass an `errorHandler` (see consumer follow-ups).
+- **Rejected:** replying 400/500 (changes responses tests see); `assertionFailure` (the server runs
+  inside the UI-test process, so it would crash the whole run); a global error-hook setting in
+  Ambassador (needs `nonisolated(unsafe)` / `@unchecked Sendable` under Swift 6).
+- **Implementation:** `DataReader.logReadFailure`; `JSONReader`/`URLParametersReader` gain an
+  internal `read(_:errorHandler:log:handler:)` overload so tests can capture the log.
+- **Status:** in progress (PR 1)
 
 ### P3 — Router recompiles every regex on every request
 - **Where:** `Router.matchRoute`, `try! NSRegularExpression(pattern:)` in the loop.
@@ -200,10 +211,14 @@ Last released version: `v4.0.5`.
 
 | PR | Items | Status | Link |
 |---|---|---|---|
-| 1 | B1, B2, B3, B5, P3 — Router fixes and reader/delay bug fixes | in progress | |
+| 1 | B1, B2, B3, B5, P3, P2 — Router fixes, delay RNG fix, reader failure logging | in progress | |
 
 ## Consumer follow-ups (envoy-ipad)
 
 Changes to make in envoy-ipad once the corresponding items ship:
 
-- _none yet_
+- **P2 (optional):** in `EnvoyUITests/Extensions/JSONReader+Extension.swift`, change the
+  `errorHandler` default from `nil` to
+  `{ XCTFail("Request body wasn't valid JSON: \($0)") }` so a malformed body fails the test with
+  a reason instead of only timing out. Requires `import XCTest` in that file. Without this change,
+  the stderr log from Ambassador is the only signal.

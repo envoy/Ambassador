@@ -8,7 +8,8 @@
 
 import XCTest
 
-import Ambassador
+@testable import Ambassador
+import Embassy
 
 class URLParametersReaderTests: XCTestCase {
     func testParseURLParameter() {
@@ -42,5 +43,21 @@ class URLParametersReaderTests: XCTestCase {
         XCTAssertEqual(receivedParams.first?.1, "bar")
         XCTAssertEqual(receivedParams.last?.0, "eggs")
         XCTAssertEqual(receivedParams.last?.1, "spam")
+    }
+
+    func testInvalidUTF8WithoutErrorHandlerLogs() {
+        var logged: [String] = []
+        let invalidUTF8: SWSGIInput = { handler in
+            handler!(Data([0xFF, 0xFE]))
+            handler!(Data())
+        }
+        URLParametersReader.read(
+            invalidUTF8,
+            errorHandler: nil,
+            log: { logged.append($0) },
+            handler: { _ in XCTFail("handler should not be called") }
+        )
+        XCTAssertEqual(logged.count, 1)
+        XCTAssertTrue(logged[0].hasPrefix("Ambassador: URLParametersReader failed to parse request body (2 bytes): "))
     }
 }
