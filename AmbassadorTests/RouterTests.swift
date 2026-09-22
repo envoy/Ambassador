@@ -112,4 +112,65 @@ class RouterTests: XCTestCase {
         XCTAssertEqual(receivedData.last?.count, 0)
         XCTAssertEqual(receivedCaptures ?? [], ["fang@envoy.com", "ABCD1234"])
     }
+    func testNonASCIIPathMatchesWholePath() {
+        let router = Router()
+        let recorder = CaptureRecorder()
+        router["/items/(.+)/end$"] = recorder.app
+
+        XCTAssertEqual(dispatch(router, path: "/items/café😀/end"), "200 OK")
+        XCTAssertEqual(recorder.captures, ["café😀"])
+    }
+
+    func testUnmatchedOptionalCaptureGroupIsEmptyString() {
+        let router = Router()
+        let recorder = CaptureRecorder()
+        router["^/users(/admin)?/(\\d+)$"] = recorder.app
+
+        XCTAssertEqual(dispatch(router, path: "/users/42"), "200 OK")
+        XCTAssertEqual(recorder.captures, ["", "42"])
+    }
+
+    func testAssigningNilRemovesRoute() {
+        let router = Router()
+        router["/foo"] = DataResponse()
+        XCTAssertEqual(dispatch(router, path: "/foo"), "200 OK")
+
+        router["/foo"] = nil
+        XCTAssertNil(router["/foo"])
+        XCTAssertEqual(dispatch(router, path: "/foo"), "404 Not found")
+    }
+
+    func testConcurrentRegistrationAndDispatch() {
+        let router = Router()
+        router["^/stable$"] = DataResponse()
+
+        DispatchQueue.concurrentPerform(iterations: 1000) { index in
+            if index.isMultiple(of: 2) {
+                router["^/route/\(index)$"] = DataResponse()
+            } else {
+                XCTAssertEqual(dispatch(router, path: "/stable"), "200 OK")
+            }
+        }
+    }
+}
+
+private final class CaptureRecorder {
+    var captures: [String]?
+
+    var app: WebApp {
+        DataResponse { environ -> Data in
+            self.captures = environ["ambassador.router_captures"] as? [String]
+            return Data()
+        }
+    }
+}
+
+private func dispatch(_ router: Router, path: String) -> String? {
+    var status: String?
+    router.app(
+        ["REQUEST_METHOD": "GET", "SCRIPT_NAME": "", "PATH_INFO": path],
+        startResponse: { receivedStatus, _ in status = receivedStatus },
+        sendBody: { _ in }
+    )
+    return status
 }

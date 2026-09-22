@@ -42,13 +42,7 @@ public struct DelayResponse: WebApp {
         case .delay(let seconds):
             delayTime = seconds
         case .random(let min, let max):
-            #if os(Linux)
-                srandom(UInt32(time(nil)))
-                let randomValue = (Double(random()) / 0x100000000)
-            #else
-                let randomValue = (Double(arc4random()) / 0x100000000)
-            #endif
-            delayTime = min + (max - min) * randomValue
+            delayTime = TimeInterval.random(in: min ... max)
         }
         let loop = environ["embassy.event_loop"] as! EventLoop
 
