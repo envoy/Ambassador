@@ -10,33 +10,34 @@ import Foundation
 
 /// Router WebApp for routing requests to different WebApp
 open class Router: WebApp {
-    var routes: [String: WebApp] = [:]
+    private struct Route {
+        let regex: NSRegularExpression
+        let app: WebApp
+    }
+
+    private var routes: [String: Route] = [:]
     open var notFoundResponse: WebApp = DataResponse(
         statusCode: 404,
         statusMessage: "Not found"
     )
-    private let semaphore = DispatchSemaphore(value: 1)
+    // Routes are typically registered from a test thread while the event loop reads them
+    private let lock = NSLock()
 
     public init() {
     }
 
+    /// The WebApp for requests whose `PATH_INFO` matches the regular expression `path`.
+    /// Matching is not anchored; use `^` and `$` to match the whole path. Assigning `nil` removes
+    /// the route.
     open subscript(path: String) -> WebApp? {
         get {
-            // enter critical section
-            _ = semaphore.wait(timeout: DispatchTime.distantFuture)
-            defer {
-                semaphore.signal()
-            }
-            return routes[path]
+            locked { routes[path]?.app }
         }
 
         set {
-            // enter critical section
-            _ = semaphore.wait(timeout: DispatchTime.distantFuture)
-            defer {
-                semaphore.signal()
-            }
-            routes[path] = newValue!
+            // compile outside the lock so an invalid pattern traps here, at the registration site
+            let route = newValue.map { Route(regex: try! NSRegularExpression(pattern: path), app: $0) }
+            locked { routes[path] = route }
         }
     }
 
@@ -57,23 +58,26 @@ open class Router: WebApp {
     }
 
     private func matchRoute(to searchPath: String) -> (WebApp, [String])? {
-        for (path, route) in routes {
-            let regex = try! NSRegularExpression(pattern: path, options: [])
-            let matches = regex.matches(
-                in: searchPath,
-                options: [],
-                range: NSRange(location: 0, length: searchPath.count)
-            )
-            if !matches.isEmpty {
-                let searchPath = NSString(string: searchPath)
-                let match = matches[0]
-                var captures = [String]()
-                for rangeIdx in 1 ..< match.numberOfRanges {
-                    captures.append(searchPath.substring(with: match.range(at: rangeIdx)))
-                }
-                return (route, captures)
+        let routes = locked { self.routes }
+        let searchRange = NSRange(searchPath.startIndex..., in: searchPath)
+        for route in routes.values {
+            guard let match = route.regex.firstMatch(in: searchPath, range: searchRange) else {
+                continue
             }
+            // an optional group that didn't participate in the match captures ""
+            let captures = (1 ..< match.numberOfRanges).map { index in
+                Range(match.range(at: index), in: searchPath).map { String(searchPath[$0]) } ?? ""
+            }
+            return (route.app, captures)
         }
         return nil
+    }
+
+    private func locked<T>(_ body: () -> T) -> T {
+        lock.lock()
+        defer {
+            lock.unlock()
+        }
+        return body()
     }
 }
