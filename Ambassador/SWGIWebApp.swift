@@ -8,8 +8,6 @@
 
 import Foundation
 
-import Embassy
-
 /// SWGIWebApp is a WebApp for building web app with any SWSGI handler
 public struct SWGIWebApp: WebApp {
     private let handler: SWSGI
@@ -19,8 +17,8 @@ public struct SWGIWebApp: WebApp {
 
     public func app(
         _ environ: [String: Any],
-        startResponse: @escaping ((String, [(String, String)]) -> Void),
-        sendBody: @escaping ((Data) -> Void)
+        startResponse: @escaping SWSGIStartResponse,
+        sendBody: @escaping SWSGISendBody
     ) {
         handler(environ, startResponse, sendBody)
     }

@@ -8,8 +8,6 @@
 
 import Foundation
 
-import Embassy
-
 public struct DataReader {
     /// Read all data into bytes array and pass it to handler
     ///  - Parameter input: the SWSGI input to read from
@@ -24,6 +22,13 @@ public struct DataReader {
                 handler(buffer)
             }
         }
+    }
+
+    /// Read the request body from `environ["swsgi.input"]` and pass it to handler
+    ///  - Parameter environ: the SWSGI environ of the request
+    ///  - Parameter handler: the handler to be called when finish reading all data
+    public static func read(_ environ: [String: Any], handler: @escaping ((Data) -> Void)) {
+        read(environ.swsgi.input, handler: handler)
     }
 
     /// Report a body that a reader couldn't decode when the caller passed no `errorHandler`.

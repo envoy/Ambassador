@@ -9,7 +9,6 @@
 import XCTest
 
 @testable import Ambassador
-import Embassy
 
 class URLParametersReaderTests: XCTestCase {
     func testParseURLParameter() {

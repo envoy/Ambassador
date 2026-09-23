@@ -8,8 +8,6 @@
 
 import Foundation
 
-import Embassy
-
 public struct JSONReader {
     /// Read all data into bytes array and parse it as JSON
     ///  - Parameter input: the SWSGI input to read from
@@ -22,6 +20,19 @@ public struct JSONReader {
         handler: @escaping ((Any) -> Void)
     ) {
         read(input, errorHandler: errorHandler, log: DataReader.logToStandardError, handler: handler)
+    }
+
+    /// Read the request body from `environ["swsgi.input"]` and parse it as JSON
+    ///  - Parameter environ: the SWSGI environ of the request
+    ///  - Parameter errorHandler: the handler to be called parsing JSON failed. When `nil`, the
+    ///                            failure is logged to standard error.
+    ///  - Parameter handler: the handler to be called when finish reading all data and parsed as JSON
+    public static func read(
+        _ environ: [String: Any],
+        errorHandler: ((Error) -> Void)? = nil,
+        handler: @escaping ((Any) -> Void)
+    ) {
+        read(environ.swsgi.input, errorHandler: errorHandler, handler: handler)
     }
 
     static func read(

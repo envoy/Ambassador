@@ -8,7 +8,7 @@ Ambassador is a lightweight Swift web framework built on **SWSGI** (Swift Web Se
 
 **Swift Package Manager is the only supported distribution.** CocoaPods and Carthage are no longer supported. `EnvoyAmbassador.podspec`, `Cartfile`, and `Cartfile.resolved` have been removed; don't reintroduce them. (The pod name `EnvoyAmbassador` existed only because `Ambassador` was taken on CocoaPods; that distinction is now irrelevant.) `README.md` still documents both installation paths and is stale on this point.
 
-Embassy is the *only* dependency, and it supplies the HTTP server, event loop, `SWSGI`/`SWSGIInput` types, and `MultiDictionary`. Ambassador itself contains no socket or HTTP-parsing code.
+Embassy is the *only* dependency, and it supplies the HTTP server, event loop, and `MultiDictionary`. Ambassador itself contains no socket or HTTP-parsing code.
 
 ## Build and test
 
@@ -35,7 +35,7 @@ Don't "simplify" any of that away. The manifest declares no `platforms:`, so SPM
 
 For reference if that migration happens: targets are `Ambassador-{iOS,macOS,tvOS}` plus matching `*Tests` bundles, and the shared `Ambassador-tvOS` scheme has an empty `<Testables>` (its test target is reachable only via the auto-generated `Ambassador-tvOSTests` scheme).
 
-Lint with `swiftlint` (config in `.swiftlint.yaml` — `force_cast`, `force_try`, and `todo` are deliberately disabled, which the codebase relies on heavily). `pre-commit` hooks cover whitespace/EOF/JSON/YAML checks.
+Lint with `swiftlint` (config in `.swiftlint.yml` — `force_cast`, `force_try`, and `todo` are deliberately disabled, which the codebase relies on heavily). `pre-commit` hooks cover whitespace/EOF/JSON/YAML checks.
 
 ## Architecture
 
@@ -43,11 +43,13 @@ Everything is one protocol, `WebApp` (`Ambassador/WebApp.swift`):
 
 ```swift
 func app(_ environ: [String: Any],
-         startResponse: @escaping ((String, [(String, String)]) -> Void),
-         sendBody: @escaping ((Data) -> Void))
+         startResponse: @escaping SWSGIStartResponse,
+         sendBody: @escaping SWSGISendBody)
 ```
 
-That signature *is* SWSGI, expressed as a protocol instead of a closure. `Router.app` is passed to `DefaultHTTPServer(app:)` as the entry point. `SWGIWebApp` wraps a bare `SWSGI` closure back into a `WebApp` for the reverse direction.
+That signature *is* SWSGI, expressed as a protocol instead of a closure. The two callback types are
+`@Sendable` typealiases, so anything a `WebApp` captures in them must be `Sendable`
+(tests use `ResponseRecorder` instead of local `var`s for this reason). `Router.app` is passed to `DefaultHTTPServer(app:)` as the entry point. `SWGIWebApp` wraps a bare `SWSGI` closure back into a `WebApp` for the reverse direction.
 
 **Composition over inheritance.** Every type in `Responses/` is a `WebApp`, and decorators wrap other `WebApp`s rather than subclassing:
 
@@ -57,7 +59,9 @@ That signature *is* SWSGI, expressed as a protocol instead of a closure. `Router
 
 Both `DataResponse` and `JSONResponse` have two initializers: a sync one (`(environ) -> Data`/`Any`) and an async one taking a `sendData`/`sendJSON` callback. The sync form is implemented in terms of the async form. `sendData` is expected to be called exactly once with the whole payload — unlike SWSGI's `sendBody`, which is a stream.
 
-**Readers** (`Readers/`) exist because SWSGI delivers request bodies as a chunk stream terminated by an empty `Data`. `DataReader.read` buffers to EOF; `JSONReader` and `URLParametersReader` both build on `DataReader` and add parsing plus an optional `errorHandler`. Read the body via `environ["swsgi.input"] as! SWSGIInput`.
+**Readers** (`Readers/`) exist because SWSGI delivers request bodies as a chunk stream terminated by an empty `Data`. `DataReader.read` buffers to EOF; `JSONReader` and `URLParametersReader` both build on `DataReader` and add parsing plus an optional `errorHandler`. Read the body via `environ.swsgi.input`, or pass `environ` straight to a reader.
+
+**Embassy boundary.** `Ambassador/SWSGI.swift` declares `SWSGI`, `SWSGIStartResponse`, `SWSGISendBody`, and `SWSGIInput` with the same function types as Embassy's, so consumers can use Ambassador's API with only `import Ambassador`, and importing both modules doesn't cause ambiguity. They're spelled out rather than written `Embassy.SWSGI` because Embassy's `enum Embassy` shadows the module name; keep them in sync if Embassy's signatures change. Don't add nominal Embassy types (`EventLoop`, `MultiDictionary`, ...) to Ambassador's public API, and don't `@_exported import Embassy`. That's why `environ.swsgi.eventLoop` is internal. Only `SWSGIEnvironment.swift` (`EventLoop`), `DataResponse.swift` (`MultiDictionary`), and `DelayResponse.swift` (calls `EventLoop` methods) `import Embassy`; other files shouldn't need to.
 
 ### Router specifics
 

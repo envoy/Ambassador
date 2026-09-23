@@ -29,10 +29,10 @@ public struct DelayResponse: WebApp {
 
     public func app(
         _ environ: [String: Any],
-        startResponse: @escaping ((String, [(String, String)]) -> Void),
-        sendBody: @escaping ((Data) -> Void)
+        startResponse: @escaping SWSGIStartResponse,
+        sendBody: @escaping SWSGISendBody
     ) {
-        var delayTime: TimeInterval!
+        let delayTime: TimeInterval
         switch delay {
         case .none:
             delayedApp.app(environ, startResponse: startResponse, sendBody: sendBody)
@@ -44,18 +44,26 @@ public struct DelayResponse: WebApp {
         case .random(let min, let max):
             delayTime = TimeInterval.random(in: min ... max)
         }
-        let loop = environ["embassy.event_loop"] as! EventLoop
+        let loop = environ.swsgi.eventLoop!
 
-        let delayedStartResponse = { (status: String, headers: [(String, String)]) in
+        let delayedStartResponse: SWSGIStartResponse = { status, headers in
             loop.call(withDelay: delayTime) {
                 startResponse(status, headers)
             }
         }
-        let delayedSendBody = { (data: Data) in
+        let delayedSendBody: SWSGISendBody = { data in
             loop.call(withDelay: delayTime) {
                 sendBody(data)
             }
         }
         delayedApp.app(environ, startResponse: delayedStartResponse, sendBody: delayedSendBody)
+    }
+}
+
+extension WebApp {
+    /// Wrap this app in a `DelayResponse`, e.g. `JSONResponse(...).delayed(.delay(seconds: 0.05))`.
+    /// The default delay matches `DelayResponse.init`.
+    public func delayed(_ delay: DelayResponse.Delay = .random(min: 0.1, max: 3)) -> DelayResponse {
+        DelayResponse(self, delay: delay)
     }
 }

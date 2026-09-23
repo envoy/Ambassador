@@ -8,8 +8,6 @@
 
 import Foundation
 
-import Embassy
-
 public struct URLParametersReader {
     public enum LocalError: Error {
         case utf8EncodingError
@@ -27,6 +25,20 @@ public struct URLParametersReader {
         handler: @escaping (([(String, String)]) -> Void)
     ) {
         read(input, errorHandler: errorHandler, log: DataReader.logToStandardError, handler: handler)
+    }
+
+    /// Read the request body from `environ["swsgi.input"]` and parse it as URL parameters
+    ///  - Parameter environ: the SWSGI environ of the request
+    ///  - Parameter errorHandler: the handler to be called when failed to read URL parameters. When
+    ///                            `nil`, the failure is logged to standard error.
+    ///  - Parameter handler: the handler to be called when finish reading all data and parsed as URL
+    ///                       parameter
+    public static func read(
+        _ environ: [String: Any],
+        errorHandler: ((Error) -> Void)? = nil,
+        handler: @escaping (([(String, String)]) -> Void)
+    ) {
+        read(environ.swsgi.input, errorHandler: errorHandler, handler: handler)
     }
 
     static func read(

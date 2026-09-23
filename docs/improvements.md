@@ -34,16 +34,19 @@ Last released version: `v4.0.5`.
 | P1 | `DelayResponse` defaults to a 0.1–3 s random delay | Speed | Depends on D1 | deferred |
 | P2 | Body-parse failures hang until client timeout | Speed | No | in progress |
 | P3 | Router recompiles every regex on every request | Speed | No | in progress |
-| A1 | Typed environ accessors and environ-taking reader overloads | API | No (additive) | proposed |
+| A1 | Typed environ accessors and environ-taking reader overloads | API | No (additive) | in progress |
 | A2 | Keyed result from `URLParametersReader` | API | No (additive) | proposed |
-| A3 | `.delayed(...)` modifier on `WebApp` | API | No (additive) | proposed |
+| A3 | `.delayed(...)` modifier on `WebApp` | API | No (additive) | in progress |
 | A4 | `JSONResponse(json:)` / `Encodable` convenience | API | No (additive) | proposed |
 | A5 | Derive default status message from status code | API | Behavior | proposed |
-| C1 | Typealiases for the SWSGI callback signatures | Consolidation | No | proposed |
+| A6 | Ambassador owns the SWSGI types in its public API | API | No (additive) | in progress |
+| A7 | Server wrapper so consumers don't drive Embassy directly | API | No (additive) | proposed |
+| C1 | Typealiases for the SWSGI callback signatures | Consolidation | No | done |
 | C2 | Sync inits delegate to async inits | Consolidation | No | proposed |
 | C3 | Shared decode helper for readers; readers become `enum`s | Consolidation | Minor | proposed |
 | C4 | `DelayResponse` schedules one flush instead of three timers | Consolidation | No | proposed |
-| C5 | Small cleanups (`SWGIWebApp` rename, doc fixes, IUO) | Consolidation | No (with deprecation) | proposed |
+| C5 | Small cleanups (`SWGIWebApp` rename, doc fixes, IUO) | Consolidation | No (with deprecation) | partly done |
+| C6 | SwiftLint config is never loaded (`.swiftlint.yaml` vs `.swiftlint.yml`) | Consolidation | No | done |
 | X1 | Make `WebApp` `Sendable` / add an `async` API | — | Yes | declined for now |
 
 ## Bugs
@@ -140,7 +143,16 @@ Last released version: `v4.0.5`.
   `JSONReader+Extension.swift` and `Dictionary+Getters.swift` to paper over this.
 - **Proposal:** Extension on `[String: Any]` with `swsgiInput`, `pathInfo`, `requestMethod`,
   `queryString`, `routerCaptures`; overloads such as `JSONReader.read(environ) { ... }`.
-- **Status:** proposed
+- **Naming decision:** envoy-ipad's `Dictionary+Getters.swift` already defines `requestMethod`,
+  `queryString`, `httpAuthorization` on `[String: Any]`, and `JSONReader+Extension` defines
+  `JSONReader.read(environ:)`. Same-named public members would make envoy-ipad's call sites
+  ambiguous, so Ambassador's accessors live under one property: `environ.swsgi.*`.
+- **Implementation:** `SWSGIEnvironment` struct (`Ambassador/SWSGIEnvironment.swift`) with `input`,
+  `requestMethod`, `pathInfo`, `queryString`, `contentType`, `routerCaptures`,
+  `header(_:)`, and the raw `environ`. (`eventLoop` exists too but is internal; see A6.) `DataReader`/`JSONReader`/`URLParametersReader` gain
+  unlabeled `read(_ environ:)` overloads (distinct from envoy-ipad's `read(environ:)`). Router and
+  DelayResponse use the new accessors internally.
+- **Status:** in progress
 
 ### A2 — Keyed result from `URLParametersReader`
 - **Evidence:** `MultiDictionary<String, String, NoOpKeyTransform<String>>(items: params)` ×9.
@@ -151,13 +163,45 @@ Last released version: `v4.0.5`.
 - **Evidence:** envoy-ipad's `DelayResponse+minMax.swift` adds its own factories.
 - **Proposal:** `extension WebApp { func delayed(_ delay: DelayResponse.Delay = ...) -> DelayResponse }`,
   so call sites read `JSONResponse(...).delayed(.delay(seconds: 0.05))`.
-- **Status:** proposed
+- **Implementation:** Default is the same `.random(min: 0.1, max: 3)` literal as `DelayResponse.init`.
+  A shared `defaultDelay` constant was left out on purpose: it would have to be public (it's used in
+  a default argument) and would pre-empt P1's override API.
+- **Status:** in progress
 
 ### A4 — `JSONResponse(json:)` / `Encodable` convenience
 - **Evidence:** `handler: ({ _ -> Any in ... })` ×12. The annotation is needed because the two
   `handler:` initializers are ambiguous for a one-argument closure.
 - **Proposal:** `JSONResponse(json: [...])` for fixed payloads; optionally an `Encodable` overload
   using `JSONEncoder`.
+- **Status:** proposed
+
+### A6 — Ambassador owns the SWSGI types in its public API
+- **Problem:** Ambassador's public API names Embassy types (`SWSGIStartResponse`, `SWSGISendBody`
+  in `WebApp`; `SWSGI` in `SWGIWebApp`; `SWSGIInput` in `environ.swsgi.input` and the readers;
+  `EventLoop` in `environ.swsgi.eventLoop`) without re-exporting them. Conforming to `WebApp` or
+  calling a reader with an input therefore needs `import Embassy` as well.
+- **Constraint:** Don't `@_exported import Embassy`; keep the server/event-loop side of Embassy
+  out of Ambassador's surface.
+- **Implementation:** `Ambassador/SWSGI.swift` declares `SWSGI`, `SWSGIStartResponse`,
+  `SWSGISendBody`, `SWSGIInput` with the same function types as Embassy, so they are the same
+  types. Verified in a scratch package that a module importing both Ambassador and Embassy still
+  compiles with no ambiguity. (`Embassy.SWSGI` can't be written because Embassy's `enum Embassy`
+  shadows the module name, so the types are spelled out.) `environ.swsgi.eventLoop` is internal
+  (it was unreleased; only `DelayResponse` uses it). Tests drop `import Embassy` except
+  `DataResponseTests`/`JSONResponseTests`, which use `MultiDictionary` to check headers. In the library, only `SWSGIEnvironment`,
+  `DataResponse`, and `DelayResponse` still `import Embassy`.
+- **Keep in sync:** if Embassy changes these signatures, `SWSGI.swift` must follow, or
+  `Router.app` stops matching `DefaultHTTPServer(app:)`.
+- **Status:** in progress
+
+### A7 — Server wrapper so consumers don't drive Embassy directly
+- **Evidence:** envoy-ipad's `UITestBase` builds `SelectorEventLoop(selector: KqueueSelector())`
+  and `DefaultHTTPServer`, runs the loop on its own `Thread`, and tears down with an `NSCondition`
+  wait loop. `EventCenter` holds an `EventLoop`. These are the remaining reasons (with A2's
+  `MultiDictionary`) that envoy-ipad imports Embassy.
+- **Proposal:** Something like `MockServer(port:router:)` with `start()` / `stop()` that owns the
+  loop, server, and thread. Needs its own design pass (logging, port selection, scheduling work
+  on the loop from tests).
 - **Status:** proposed
 
 ### A5 — Derive default status message from status code
@@ -171,7 +215,8 @@ Last released version: `v4.0.5`.
 ### C1 — Typealiases for the SWSGI callback signatures
 - **Problem:** `(String, [(String, String)]) -> Void` and `(Data) -> Void` are spelled out 7 times.
 - **Proposal:** Public `StartResponse`, `SendBody`, `Environ` typealiases. Source-compatible.
-- **Status:** proposed
+- **Status:** done — `WebApp` and the responses use `SWSGIStartResponse` / `SWSGISendBody`
+  (`@Sendable`), declared by Ambassador since A6. `Environ` still proposed.
 
 ### C2 — Sync inits delegate to async inits
 - **Problem:** `DataResponse` and `JSONResponse` each have a sync and async init with duplicated
@@ -196,8 +241,17 @@ Last released version: `v4.0.5`.
 ### C5 — Small cleanups
 - Rename `SWGIWebApp` → `SWSGIWebApp`, keep the old name as a deprecated typealias (unused in envoy-ipad).
 - Fix the `DataResponse.handler` doc comment ("generating JSON response").
-- Replace `var delayTime: TimeInterval!` with a `let` built from a `switch` expression.
-- **Status:** proposed
+- Replace `var delayTime: TimeInterval!` with a `let` built from a `switch` expression. (done)
+- **Status:** partly done — IUO replaced; rename and doc comment still proposed
+
+### C6 — SwiftLint config is never loaded
+- **Problem:** SwiftLint auto-discovers only `.swiftlint.yml`. The repo's file is `.swiftlint.yaml`,
+  so its rules (disabling `force_cast`, `force_try`, `todo`; excluding `Carthage`/`Pods`/`fastlane`)
+  are ignored unless `--config .swiftlint.yaml` is passed. Plain `swiftlint` reports every `as!`
+  as an error.
+- **Proposal:** Rename to `.swiftlint.yml` and drop the stale `Carthage`/`Pods`/`fastlane` excludes.
+  Update the CLAUDE.md lint note.
+- **Status:** done (renamed; `excluded:` now lists `.build` and `SourcePackages`; CLAUDE.md updated).
 
 ## Declined / deferred
 
@@ -212,6 +266,7 @@ Last released version: `v4.0.5`.
 | PR | Items | Status | Link |
 |---|---|---|---|
 | 1 | B1, B2, B3, B5, P3, P2 — Router fixes, delay RNG fix, reader failure logging | in progress | |
+| 2 | A1, A3, A6 — `environ.swsgi` accessors, environ reader overloads, `.delayed()`, Ambassador-owned SWSGI types; README fixes | in progress | |
 
 ## Consumer follow-ups (envoy-ipad)
 
@@ -222,3 +277,13 @@ Changes to make in envoy-ipad once the corresponding items ship:
   `{ XCTFail("Request body wasn't valid JSON: \($0)") }` so a malformed body fails the test with
   a reason instead of only timing out. Requires `import XCTest` in that file. Without this change,
   the stderr log from Ambassador is the only signal.
+- **A1:** replace `environ["swsgi.input"] as! SWSGIInput` (×12) with `environ.swsgi.input`, or pass
+  `environ` straight to the reader. Once nothing uses them, delete `JSONReader+Extension.swift` and
+  the `requestMethod`/`queryString` getters in `Dictionary+Getters.swift` in favor of
+  `environ.swsgi.*` (`httpAuthorization` → `environ.swsgi.header("Authorization")`). Optional;
+  nothing breaks if left as is.
+- **A3:** `DelayResponse+minMax.swift` can go; `DelayResponse.response(for: app, withMinDelay: a,
+  andMaxDelay: b)` → `app.delayed(.random(min: a, max: b))`. Optional.
+- **A6:** once A1's overloads are adopted, files that imported Embassy only for `SWSGIInput`
+  (or `SWSGIStartResponse`/`SWSGISendBody`) can drop `import Embassy`. Files using
+  `MultiDictionary` (A2) or the server/event loop (A7) still need it.

@@ -43,14 +43,14 @@ open class Router: WebApp {
 
     open func app(
         _ environ: [String: Any],
-        startResponse: @escaping ((String, [(String, String)]) -> Void),
-        sendBody: @escaping ((Data) -> Void)
+        startResponse: @escaping SWSGIStartResponse,
+        sendBody: @escaping SWSGISendBody
     ) {
         let path = environ["PATH_INFO"] as! String
 
         if let (webApp, captures) = matchRoute(to: path) {
             var environ = environ
-            environ["ambassador.router_captures"] = captures
+            environ[SWSGIEnvironment.routerCapturesKey] = captures
             webApp.app(environ, startResponse: startResponse, sendBody: sendBody)
             return
         }
