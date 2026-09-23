@@ -17,12 +17,22 @@ public struct URLParametersReader {
 
     /// Read all data into bytes array and parse it as URL parameter
     ///  - Parameter input: the SWSGI input to read from
-    ///  - Parameter errorHandler: the handler to be called when failed to read URL parameters
+    ///  - Parameter errorHandler: the handler to be called when failed to read URL parameters. When
+    ///                            `nil`, the failure is logged to standard error.
     ///  - Parameter handler: the handler to be called when finish reading all data and parsed as URL
     ///                       parameter
     public static func read(
         _ input: SWSGIInput,
         errorHandler: ((Error) -> Void)? = nil,
+        handler: @escaping (([(String, String)]) -> Void)
+    ) {
+        read(input, errorHandler: errorHandler, log: DataReader.logToStandardError, handler: handler)
+    }
+
+    static func read(
+        _ input: SWSGIInput,
+        errorHandler: ((Error) -> Void)?,
+        log: @escaping (String) -> Void,
         handler: @escaping (([(String, String)]) -> Void)
     ) {
         DataReader.read(input) { data in
@@ -35,6 +45,13 @@ public struct URLParametersReader {
             } catch {
                 if let errorHandler = errorHandler {
                     errorHandler(error)
+                } else {
+                    DataReader.logReadFailure(
+                        reader: "URLParametersReader",
+                        byteCount: data.count,
+                        error: error,
+                        log: log
+                    )
                 }
             }
         }
