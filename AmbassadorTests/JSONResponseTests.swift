@@ -17,17 +17,7 @@ class JSONResponseTests: XCTestCase {
             return ["foo", "bar"]
         }
 
-        var receivedStatus: String?
-        var receivedHeaders: [(String, String)]?
-        let startResponse = { (status: String, headers: [(String, String)]) in
-            receivedStatus = status
-            receivedHeaders = headers
-        }
-
-        var receivedData: [Data] = []
-        let sendBody = { (data: Data) in
-            receivedData.append(data)
-        }
+        let recorder = ResponseRecorder()
 
         let environ: [String: Any] = [
             "REQUEST_METHOD": "GET",
@@ -36,19 +26,19 @@ class JSONResponseTests: XCTestCase {
         ]
         dataResponse.app(
             environ,
-            startResponse: startResponse,
-            sendBody: sendBody
+            startResponse: recorder.startResponse,
+            sendBody: recorder.sendBody
         )
 
-        XCTAssertEqual(receivedStatus, "200 OK")
+        XCTAssertEqual(recorder.lastStatus, "200 OK")
         let headersDict = MultiDictionary<String, String, LowercaseKeyTransform>(
-            items: receivedHeaders ?? []
+            items: recorder.lastHeaders
         )
         XCTAssertEqual(headersDict["Content-Type"], "application/json")
 
-        XCTAssertEqual(receivedData.count, 2)
-        XCTAssertEqual(receivedData.last?.count, 0)
-        let bytes = receivedData.first ?? Data()
+        XCTAssertEqual(recorder.bodies.count, 2)
+        XCTAssertEqual(recorder.bodies.last?.count, 0)
+        let bytes = recorder.bodies.first ?? Data()
         let parsedJSON: [String] = try! JSONSerialization.jsonObject(
             with: bytes,
             options: .allowFragments

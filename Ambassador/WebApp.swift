@@ -8,11 +8,13 @@
 
 import Foundation
 
+import Embassy
+
 /// Web Application
 public protocol WebApp {
     func app(
         _ environ: [String: Any],
-        startResponse: @escaping ((String, [(String, String)]) -> Void),
-        sendBody: @escaping ((Data) -> Void)
+        startResponse: @escaping SWSGIStartResponse,
+        sendBody: @escaping SWSGISendBody
     )
 }

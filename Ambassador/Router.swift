@@ -8,6 +8,8 @@
 
 import Foundation
 
+import Embassy
+
 /// Router WebApp for routing requests to different WebApp
 open class Router: WebApp {
     private struct Route {
@@ -43,8 +45,8 @@ open class Router: WebApp {
 
     open func app(
         _ environ: [String: Any],
-        startResponse: @escaping ((String, [(String, String)]) -> Void),
-        sendBody: @escaping ((Data) -> Void)
+        startResponse: @escaping SWSGIStartResponse,
+        sendBody: @escaping SWSGISendBody
     ) {
         let path = environ["PATH_INFO"] as! String
 

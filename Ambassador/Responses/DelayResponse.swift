@@ -29,10 +29,10 @@ public struct DelayResponse: WebApp {
 
     public func app(
         _ environ: [String: Any],
-        startResponse: @escaping ((String, [(String, String)]) -> Void),
-        sendBody: @escaping ((Data) -> Void)
+        startResponse: @escaping SWSGIStartResponse,
+        sendBody: @escaping SWSGISendBody
     ) {
-        var delayTime: TimeInterval!
+        let delayTime: TimeInterval
         switch delay {
         case .none:
             delayedApp.app(environ, startResponse: startResponse, sendBody: sendBody)
@@ -46,12 +46,12 @@ public struct DelayResponse: WebApp {
         }
         let loop = environ.swsgi.eventLoop!
 
-        let delayedStartResponse = { (status: String, headers: [(String, String)]) in
+        let delayedStartResponse: SWSGIStartResponse = { status, headers in
             loop.call(withDelay: delayTime) {
                 startResponse(status, headers)
             }
         }
-        let delayedSendBody = { (data: Data) in
+        let delayedSendBody: SWSGISendBody = { data in
             loop.call(withDelay: delayTime) {
                 sendBody(data)
             }

@@ -43,11 +43,13 @@ Everything is one protocol, `WebApp` (`Ambassador/WebApp.swift`):
 
 ```swift
 func app(_ environ: [String: Any],
-         startResponse: @escaping ((String, [(String, String)]) -> Void),
-         sendBody: @escaping ((Data) -> Void))
+         startResponse: @escaping SWSGIStartResponse,
+         sendBody: @escaping SWSGISendBody)
 ```
 
-That signature *is* SWSGI, expressed as a protocol instead of a closure. `Router.app` is passed to `DefaultHTTPServer(app:)` as the entry point. `SWGIWebApp` wraps a bare `SWSGI` closure back into a `WebApp` for the reverse direction.
+That signature *is* SWSGI, expressed as a protocol instead of a closure. The two callback types are
+Embassy's `@Sendable` typealiases, so anything a `WebApp` captures in them must be `Sendable`
+(tests use `ResponseRecorder` instead of local `var`s for this reason). `Router.app` is passed to `DefaultHTTPServer(app:)` as the entry point. `SWGIWebApp` wraps a bare `SWSGI` closure back into a `WebApp` for the reverse direction.
 
 **Composition over inheritance.** Every type in `Responses/` is a `WebApp`, and decorators wrap other `WebApp`s rather than subclassing:
 

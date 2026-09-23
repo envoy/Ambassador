@@ -17,15 +17,7 @@ class RouterTests: XCTestCase {
             return Data("hello".utf8)
         }
 
-        var receivedStatus: [String] = []
-        let startResponse = { (status: String, headers: [(String, String)]) in
-            receivedStatus.append(status)
-        }
-
-        var receivedData: [Data] = []
-        let sendBody = { (data: Data) in
-            receivedData.append(data)
-        }
+        let recorder = ResponseRecorder()
         let environ: [String: Any] = [
             "REQUEST_METHOD": "GET",
             "SCRIPT_NAME": "",
@@ -33,13 +25,13 @@ class RouterTests: XCTestCase {
         ]
         router.app(
             environ,
-            startResponse: startResponse,
-            sendBody: sendBody
+            startResponse: recorder.startResponse,
+            sendBody: recorder.sendBody
         )
-        XCTAssertEqual(receivedStatus.count, 1)
-        XCTAssertEqual(receivedStatus.last, "404 Not found")
-        XCTAssertEqual(receivedData.count, 1)
-        XCTAssertEqual(receivedData.last?.count, 0)
+        XCTAssertEqual(recorder.statuses.count, 1)
+        XCTAssertEqual(recorder.lastStatus, "404 Not found")
+        XCTAssertEqual(recorder.bodies.count, 1)
+        XCTAssertEqual(recorder.bodies.last?.count, 0)
 
         let environ2: [String: Any] = [
             "REQUEST_METHOD": "GET",
@@ -48,14 +40,14 @@ class RouterTests: XCTestCase {
         ]
         router.app(
             environ2,
-            startResponse: startResponse,
-            sendBody: sendBody
+            startResponse: recorder.startResponse,
+            sendBody: recorder.sendBody
         )
-        XCTAssertEqual(receivedStatus.count, 2)
-        XCTAssertEqual(receivedStatus.last, "200 OK")
-        XCTAssertEqual(receivedData.count, 3)
-        XCTAssertEqual(String(bytes: receivedData[1], encoding: String.Encoding.utf8), "hello")
-        XCTAssertEqual(receivedData.last?.count, 0)
+        XCTAssertEqual(recorder.statuses.count, 2)
+        XCTAssertEqual(recorder.lastStatus, "200 OK")
+        XCTAssertEqual(recorder.bodies.count, 3)
+        XCTAssertEqual(String(bytes: recorder.bodies[1], encoding: String.Encoding.utf8), "hello")
+        XCTAssertEqual(recorder.bodies.last?.count, 0)
     }
 
     func testRegularExpressionRouting() {
@@ -71,15 +63,7 @@ class RouterTests: XCTestCase {
             return Data("foo".utf8)
         }
 
-        var receivedStatus: [String] = []
-        let startResponse = { (status: String, headers: [(String, String)]) in
-            receivedStatus.append(status)
-        }
-
-        var receivedData: [Data] = []
-        let sendBody = { (data: Data) in
-            receivedData.append(data)
-        }
+        let recorder = ResponseRecorder()
         let environ: [String: Any] = [
             "REQUEST_METHOD": "GET",
             "SCRIPT_NAME": "",
@@ -87,13 +71,13 @@ class RouterTests: XCTestCase {
         ]
         router.app(
             environ,
-            startResponse: startResponse,
-            sendBody: sendBody
+            startResponse: recorder.startResponse,
+            sendBody: recorder.sendBody
         )
-        XCTAssertEqual(receivedStatus.count, 1)
-        XCTAssertEqual(receivedStatus.last, "404 Not found")
-        XCTAssertEqual(receivedData.count, 1)
-        XCTAssertEqual(receivedData.last?.count, 0)
+        XCTAssertEqual(recorder.statuses.count, 1)
+        XCTAssertEqual(recorder.lastStatus, "404 Not found")
+        XCTAssertEqual(recorder.bodies.count, 1)
+        XCTAssertEqual(recorder.bodies.last?.count, 0)
 
         let environ2: [String: Any] = [
             "REQUEST_METHOD": "GET",
@@ -102,14 +86,14 @@ class RouterTests: XCTestCase {
         ]
         router.app(
             environ2,
-            startResponse: startResponse,
-            sendBody: sendBody
+            startResponse: recorder.startResponse,
+            sendBody: recorder.sendBody
         )
-        XCTAssertEqual(receivedStatus.count, 2)
-        XCTAssertEqual(receivedStatus.last, "200 OK")
-        XCTAssertEqual(receivedData.count, 3)
-        XCTAssertEqual(String(bytes: receivedData[1], encoding: String.Encoding.utf8), "email")
-        XCTAssertEqual(receivedData.last?.count, 0)
+        XCTAssertEqual(recorder.statuses.count, 2)
+        XCTAssertEqual(recorder.lastStatus, "200 OK")
+        XCTAssertEqual(recorder.bodies.count, 3)
+        XCTAssertEqual(String(bytes: recorder.bodies[1], encoding: String.Encoding.utf8), "email")
+        XCTAssertEqual(recorder.bodies.last?.count, 0)
         XCTAssertEqual(receivedCaptures ?? [], ["fang@envoy.com", "ABCD1234"])
     }
     func testNonASCIIPathMatchesWholePath() {
@@ -169,11 +153,11 @@ private final class CaptureRecorder {
 }
 
 private func dispatch(_ router: Router, path: String) -> String? {
-    var status: String?
+    let recorder = ResponseRecorder()
     router.app(
         ["REQUEST_METHOD": "GET", "SCRIPT_NAME": "", "PATH_INFO": path],
-        startResponse: { receivedStatus, _ in status = receivedStatus },
-        sendBody: { _ in }
+        startResponse: recorder.startResponse,
+        sendBody: recorder.sendBody
     )
-    return status
+    return recorder.lastStatus
 }

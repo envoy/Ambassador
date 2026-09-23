@@ -26,17 +26,7 @@ class DataResponseTests: XCTestCase {
             return Data("hello".utf8)
         }
 
-        var receivedStatus: String?
-        var receivedHeaders: [(String, String)]?
-        let startResponse = { (status: String, headers: [(String, String)]) in
-            receivedStatus = status
-            receivedHeaders = headers
-        }
-
-        var receivedData: [Data] = []
-        let sendBody = { (data: Data) in
-            receivedData.append(data)
-        }
+        let recorder = ResponseRecorder()
 
         let environ: [String: Any] = [
             "REQUEST_METHOD": "GET",
@@ -45,21 +35,21 @@ class DataResponseTests: XCTestCase {
         ]
         dataResponse.app(
             environ,
-            startResponse: startResponse,
-            sendBody: sendBody
+            startResponse: recorder.startResponse,
+            sendBody: recorder.sendBody
         )
 
-        XCTAssertEqual(receivedStatus, "201 created")
+        XCTAssertEqual(recorder.lastStatus, "201 created")
         let headersDict = MultiDictionary<String, String, LowercaseKeyTransform>(
-            items: receivedHeaders ?? []
+            items: recorder.lastHeaders
         )
         XCTAssertEqual(headersDict["Content-Type"], "application/my-format")
         XCTAssertEqual(Int(headersDict["Content-Length"] ?? "0"), "hello".count)
         XCTAssertEqual(headersDict["X-Foo-Bar"], "header")
 
-        XCTAssertEqual(receivedData.count, 2)
-        XCTAssertEqual(receivedData.first ?? Data(), Data("hello".utf8))
-        XCTAssertEqual(receivedData.last?.count, 0)
+        XCTAssertEqual(recorder.bodies.count, 2)
+        XCTAssertEqual(recorder.bodies.first ?? Data(), Data("hello".utf8))
+        XCTAssertEqual(recorder.bodies.last?.count, 0)
 
         XCTAssertEqual(receivedEnviron?.count, environ.count)
         for (key, value) in environ {
@@ -70,12 +60,7 @@ class DataResponseTests: XCTestCase {
     func testDataResponseWithEmptyData() {
         let dataResponse = DataResponse()
 
-        let startResponse = { (status: String, headers: [(String, String)]) in
-        }
-        var receivedData: [Data] = []
-        let sendBody = { (data: Data) in
-            receivedData.append(data)
-        }
+        let recorder = ResponseRecorder()
 
         let environ: [String: Any] = [
             "REQUEST_METHOD": "GET",
@@ -84,11 +69,11 @@ class DataResponseTests: XCTestCase {
         ]
         dataResponse.app(
             environ,
-            startResponse: startResponse,
-            sendBody: sendBody
+            startResponse: recorder.startResponse,
+            sendBody: recorder.sendBody
         )
 
-        XCTAssertEqual(receivedData.count, 1)
-        XCTAssertEqual(receivedData.first?.count, 0)
+        XCTAssertEqual(recorder.bodies.count, 1)
+        XCTAssertEqual(recorder.bodies.first?.count, 0)
     }
 }

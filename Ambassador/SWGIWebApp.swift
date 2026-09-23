@@ -19,8 +19,8 @@ public struct SWGIWebApp: WebApp {
 
     public func app(
         _ environ: [String: Any],
-        startResponse: @escaping ((String, [(String, String)]) -> Void),
-        sendBody: @escaping ((Data) -> Void)
+        startResponse: @escaping SWSGIStartResponse,
+        sendBody: @escaping SWSGISendBody
     ) {
         handler(environ, startResponse, sendBody)
     }
