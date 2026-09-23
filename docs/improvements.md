@@ -8,7 +8,8 @@ Last released version: `v4.0.5`.
 
 ## How to use this file
 
-- Each item has an ID (`B` bug, `P` performance, `A` API/ease of use, `C` consolidation).
+- Each item has an ID (`B` bug, `P` performance, `A` API/ease of use, `C` consolidation,
+  `M` maintenance/modernization: docs, tooling, CI, release).
 - **Status**: `proposed` → `chosen` → `in progress` → `done` (with PR link), or `declined` (with reason).
 - **Breaking** says whether the change can break consumers' source or runtime behavior.
 - Mark an item `chosen` before starting work on it. Group chosen items into PRs in the
@@ -47,7 +48,14 @@ Last released version: `v4.0.5`.
 | C4 | `DelayResponse` schedules one flush instead of three timers | Consolidation | No | deferred |
 | C5 | Small cleanups (`SWGIWebApp` rename, doc fixes, IUO) | Consolidation | No (with deprecation) | partly done |
 | C6 | SwiftLint config is never loaded (`.swiftlint.yaml` vs `.swiftlint.yml`) | Consolidation | No | done |
-| C7 | `DataResponse` checks headers without `MultiDictionary` | Consolidation | No | in progress |
+| C7 | `DataResponse` checks headers without `MultiDictionary` | Consolidation | No | done (PR 2) |
+| M1 | README: wrong module name in example, stale install section and badges | Maintenance | No | proposed |
+| M2 | Remove dead tooling configs (Code Climate, Hound, 2016 pre-commit pin) | Maintenance | No | proposed |
+| M3 | Delete the broken Xcode project, workspace, `Info.plist`s and `Ambassador.h` | Maintenance | No | proposed |
+| M4 | GitHub Actions CI: build, test, lint | Maintenance | No | proposed |
+| M5 | Clear the 16 SwiftLint warnings so lint can run strict | Maintenance | No | proposed |
+| M6 | v5 release readiness: Embassy pin, changelog, consumer migration notes | Maintenance | — | proposed |
+| M7 | `DelayResponse` unit tests (`.none`, `.never`) | Maintenance | No | proposed |
 | X1 | Make `WebApp` `Sendable` / add an `async` API | — | Yes | declined for now |
 
 ## Bugs
@@ -222,6 +230,10 @@ Last released version: `v4.0.5`.
 - **Proposal:** Something like `MockServer(port:router:)` with `start()` / `stop()` that owns the
   loop, server, and thread. Needs its own design pass (logging, port selection, scheduling work
   on the loop from tests).
+- **Port selection:** envoy-ipad hard-codes port 8080 (`UITestBase`, with a TODO to randomize),
+  which stops UI tests from running on several simulators at once. If the wrapper can bind a free
+  port and expose it (for `ENVOY_BASEURL`), parallel UI-test runs become possible: the one speed
+  win left besides P1.
 - **Status:** proposed
 
 ### A5 — Derive default status message from status code
@@ -291,13 +303,15 @@ Last released version: `v4.0.5`.
   `caseInsensitiveCompare`; `ResponseRecorder.lastHeader(_:)` replaces it in tests. New test
   `testCallerHeadersAreNotDuplicated` pins the case-insensitive behavior. Behavior unchanged.
   The test target still depends on Embassy for the planned C4 event-loop test.
-- **Status:** in progress (PR 2)
+- **Status:** done (PR 2)
 
 ### C5 — Small cleanups
 - Rename `SWGIWebApp` → `SWSGIWebApp`, keep the old name as a deprecated typealias (unused in envoy-ipad).
 - Fix the `DataResponse.handler` doc comment ("generating JSON response").
 - Replace `var delayTime: TimeInterval!` with a `let` built from a `switch` expression. (done)
-- **Status:** partly done — IUO replaced; rename and doc comment still proposed
+- `Router.app` reads `environ["PATH_INFO"] as! String`; use `environ.swsgi.pathInfo` like the
+  rest of the library (keep the trap: a missing `PATH_INFO` is a broken server, not a 404).
+- **Status:** partly done — IUO replaced; rename, doc comment, and `pathInfo` still proposed
 
 ### C6 — SwiftLint config is never loaded
 - **Problem:** SwiftLint auto-discovers only `.swiftlint.yml`. The repo's file is `.swiftlint.yaml`,
@@ -307,6 +321,66 @@ Last released version: `v4.0.5`.
 - **Proposal:** Rename to `.swiftlint.yml` and drop the stale `Carthage`/`Pods`/`fastlane` excludes.
   Update the CLAUDE.md lint note.
 - **Status:** done (renamed; `excluded:` now lists `.build` and `SourcePackages`; CLAUDE.md updated).
+
+## Maintenance / modernization
+
+Findings from a second pass (2026-09-23) after the A/C items above landed. None change behavior.
+
+### M1 — README fixes
+- The first example says `import EnvoyAmbassador`; the module is `Ambassador`.
+- The install section still documents CocoaPods and Carthage, and the SPM snippet says
+  `from: "4.0.0"`; update for v5 (see M6).
+- The Travis, CocoaPods, and Code Climate badges point at services no longer used.
+- **Status:** proposed (belongs with PR 2's README work)
+
+### M2 — Remove dead tooling configs
+- `.codeclimate.yml` (Tailor engine, `Carthage`/`Pods`/`fastlane` excludes), `.hound.yaml`, and
+  `.pre-commit-config.yaml`, which pins a 2016 hook commit with the deprecated `sha:` key.
+- **Proposal:** delete the first two; either delete the pre-commit config or move it to `rev:`
+  with a current tag. Keep `.swiftlint.yml`.
+- **Status:** proposed
+
+### M3 — Delete the Xcode project and its leftovers
+- `Ambassador.xcodeproj` and `Ambassador.xcworkspace` are hard-wired to Carthage and cannot
+  build (see CLAUDE.md). `Ambassador/Info.plist`, `AmbassadorTests/Info.plist`, and
+  `Ambassador/Ambassador.h` exist only for them, and are why `Package.swift` needs `exclude:`.
+- **Proposal:** delete all of them and drop the `exclude:` lists. Alternative: migrate the project
+  to an `XCRemoteSwiftPackageReference`, but nothing uses it since SPM is the only supported path.
+- **Status:** proposed — deletion, so needs an explicit go-ahead
+
+### M4 — CI
+- No CI runs today (the Travis badge is dead). A GitHub Actions workflow on macOS running
+  `swift build`, `swift test`, and `swiftlint` would catch Swift 6 strict-concurrency regressions
+  and lint drift before review.
+- **Status:** proposed
+
+### M5 — Clear the SwiftLint warnings
+- 16 warnings, all in tests and `Package.swift`: `trailing_comma`, `empty_parentheses_with_trailing_closure`,
+  `unused_closure_parameter`. Fix them (or disable `trailing_comma`, which is a style choice) so
+  `swiftlint --strict` can gate CI (M4).
+- **Status:** proposed
+
+### M6 — v5 release readiness
+- `Package.swift` pins Embassy `exact: "5.0.0-rc"`; move to `from: "5.0.0"` once Embassy tags it.
+- No changelog exists. v5 needs one listing: Embassy 5 with `@Sendable` SWSGI callbacks, readers
+  as `enum`s, the new API (A1–A4, A6), and that `import Embassy` is no longer needed for
+  Ambassador's API.
+- Consumer note: envoy-ipad's `EventCenter.app` declares non-`@Sendable` callback types and must
+  switch to `SWSGIStartResponse`/`SWSGISendBody` to conform to `WebApp` on v5.
+- Tag `v5.0.0` per D2.
+- **Status:** proposed
+
+### M7 — `DelayResponse` unit tests
+- There are none. `.none` (passes straight through) and `.never` (never calls the wrapped app)
+  need no event loop. `.delay`/`.random` need the C4 event-loop harness; this test file is where
+  that lands.
+- **Status:** proposed
+
+### Not recommended
+- `NSRegularExpression` → Swift `Regex`: raises the platform floor and changes pattern syntax for
+  no gain now that P3 caches compiled patterns.
+- Migrating the existing XCTest files to Swift Testing: CLAUDE.md asks not to churn them.
+- Replacing `FormParameters`' linear scan: parameter lists are tiny.
 
 ## Declined / deferred
 
@@ -346,3 +420,8 @@ Changes to make in envoy-ipad once the corresponding items ship:
   with `URLParametersReader.readParameters(environ) { params in ... params["key"] }`, and
   `TestHelper.parseQueryParameters(URL:)` (×2) with `environ.swsgi.queryParameters`, or
   `FormParameters(parsing:)` on the text after `?` when only a URL string is at hand. Optional.
+- **A4:** 14 fixed-payload routes can drop their closures: 8 `JSONResponse(handler: ({ _ -> Any in
+  X }))` and 6 `JSONResponse(handler: { _, sendJSON in sendJSON(X) })` become
+  `JSONResponse(json: X)`. `X` is still evaluated per request. Optional.
+- **M6:** `EventCenter.app` must use `SWSGIStartResponse`/`SWSGISendBody` (they're `@Sendable`)
+  to conform to `WebApp` on v5. Required.
