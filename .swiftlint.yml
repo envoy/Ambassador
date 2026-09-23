@@ -3,6 +3,5 @@ disabled_rules: # rule identifiers to exclude from running
   - force_try
   - todo
 excluded:
-  - Carthage
-  - Pods
-  - fastlane
+  - .build
+  - SourcePackages

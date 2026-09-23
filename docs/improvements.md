@@ -44,7 +44,7 @@ Last released version: `v4.0.5`.
 | C3 | Shared decode helper for readers; readers become `enum`s | Consolidation | Minor | proposed |
 | C4 | `DelayResponse` schedules one flush instead of three timers | Consolidation | No | proposed |
 | C5 | Small cleanups (`SWGIWebApp` rename, doc fixes, IUO) | Consolidation | No (with deprecation) | proposed |
-| C6 | SwiftLint config is never loaded (`.swiftlint.yaml` vs `.swiftlint.yml`) | Consolidation | No | proposed |
+| C6 | SwiftLint config is never loaded (`.swiftlint.yaml` vs `.swiftlint.yml`) | Consolidation | No | done |
 | X1 | Make `WebApp` `Sendable` / add an `async` API | — | Yes | declined for now |
 
 ## Bugs
@@ -184,7 +184,8 @@ Last released version: `v4.0.5`.
 ### C1 — Typealiases for the SWSGI callback signatures
 - **Problem:** `(String, [(String, String)]) -> Void` and `(Data) -> Void` are spelled out 7 times.
 - **Proposal:** Public `StartResponse`, `SendBody`, `Environ` typealiases. Source-compatible.
-- **Status:** proposed
+- **Status:** done for the callbacks — `WebApp` now uses Embassy's `SWSGIStartResponse` /
+  `SWSGISendBody` (which are `@Sendable`). `Environ` still proposed.
 
 ### C2 — Sync inits delegate to async inits
 - **Problem:** `DataResponse` and `JSONResponse` each have a sync and async init with duplicated
@@ -219,7 +220,7 @@ Last released version: `v4.0.5`.
   as an error.
 - **Proposal:** Rename to `.swiftlint.yml` and drop the stale `Carthage`/`Pods`/`fastlane` excludes.
   Update the CLAUDE.md lint note.
-- **Status:** proposed
+- **Status:** done (renamed; `excluded:` now lists `.build` and `SourcePackages`; CLAUDE.md updated).
 
 ## Declined / deferred
 

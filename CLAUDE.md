@@ -35,7 +35,7 @@ Don't "simplify" any of that away. The manifest declares no `platforms:`, so SPM
 
 For reference if that migration happens: targets are `Ambassador-{iOS,macOS,tvOS}` plus matching `*Tests` bundles, and the shared `Ambassador-tvOS` scheme has an empty `<Testables>` (its test target is reachable only via the auto-generated `Ambassador-tvOSTests` scheme).
 
-Lint with `swiftlint` (config in `.swiftlint.yaml` — `force_cast`, `force_try`, and `todo` are deliberately disabled, which the codebase relies on heavily). `pre-commit` hooks cover whitespace/EOF/JSON/YAML checks.
+Lint with `swiftlint` (config in `.swiftlint.yml` — `force_cast`, `force_try`, and `todo` are deliberately disabled, which the codebase relies on heavily). `pre-commit` hooks cover whitespace/EOF/JSON/YAML checks.
 
 ## Architecture
 
