@@ -43,7 +43,7 @@ Last released version: `v4.0.5`.
 | A6 | Ambassador owns the SWSGI types in its public API | API | No (additive) | in progress |
 | A7 | Server wrapper so consumers don't drive Embassy directly | API | No (additive) | proposed |
 | C1 | Typealiases for the SWSGI callback signatures | Consolidation | No | done |
-| C2 | Sync inits delegate to async inits | Consolidation | No | proposed |
+| C2 | Sync inits delegate to async inits | Consolidation | No | done (PR 2) |
 | C3 | Shared decode helper for readers; readers become `enum`s | Consolidation | Minor | in progress |
 | C4 | `DelayResponse` schedules one flush instead of three timers | Consolidation | No | deferred |
 | C5 | Small cleanups (`SWGIWebApp` rename, doc fixes, IUO) | Consolidation | No (with deprecation) | partly done |
@@ -254,7 +254,13 @@ Last released version: `v4.0.5`.
 - **Problem:** `DataResponse` and `JSONResponse` each have a sync and async init with duplicated
   bodies; JSON serialization appears twice.
 - **Proposal:** Sync init calls `self.init(...)` with a wrapping closure; one serialization site.
-- **Status:** proposed
+- **Implementation:** `DataResponse`'s sync init delegates to the async one with
+  `sendData(handler?(environ) ?? Data())`. `JSONResponse` gained a private `init(dataResponse:)`
+  that every initializer ends in; the sync `handler:` init delegates to the async one (the single
+  `JSONSerialization` site) or, with no handler, builds an empty-body `DataResponse` directly so
+  nothing is serialized. `json:` and `encoding:` are unchanged in behavior. Existing tests cover
+  every form; none changed.
+- **Status:** done (PR 2)
 
 ### C3 — Shared decode helper for readers; readers become `enum`s
 - **Problem:** `JSONReader` and `URLParametersReader` repeat "read all, decode, route the error".
@@ -307,11 +313,11 @@ Last released version: `v4.0.5`.
 
 ### C5 — Small cleanups
 - Rename `SWGIWebApp` → `SWSGIWebApp`, keep the old name as a deprecated typealias (unused in envoy-ipad).
-- Fix the `DataResponse.handler` doc comment ("generating JSON response").
+- Fix the `DataResponse.handler` doc comment ("generating JSON response"). (done)
 - Replace `var delayTime: TimeInterval!` with a `let` built from a `switch` expression. (done)
 - `Router.app` reads `environ["PATH_INFO"] as! String`; use `environ.swsgi.pathInfo` like the
   rest of the library (keep the trap: a missing `PATH_INFO` is a broken server, not a 404).
-- **Status:** partly done — IUO replaced; rename, doc comment, and `pathInfo` still proposed
+- **Status:** partly done — IUO and doc comment done; rename and `pathInfo` still proposed
 
 ### C6 — SwiftLint config is never loaded
 - **Problem:** SwiftLint auto-discovers only `.swiftlint.yml`. The repo's file is `.swiftlint.yaml`,
@@ -395,7 +401,7 @@ Findings from a second pass (2026-09-23) after the A/C items above landed. None 
 | PR | Items | Status | Link |
 |---|---|---|---|
 | 1 | B1, B2, B3, B5, P3, P2 — Router fixes, delay RNG fix, reader failure logging | in progress | |
-| 2 | A1, A2, A3, A4, A6, C3, C7 — `environ.swsgi` accessors, environ reader overloads, `.delayed()`, Ambassador-owned SWSGI types, keyed `FormParameters`, `JSONResponse(json:)`/Codable, shared reader decode, `MultiDictionary` dropped from `DataResponse`; README fixes | in progress | |
+| 2 | A1, A2, A3, A4, A6, C2, C3, C7 — `environ.swsgi` accessors, environ reader overloads, `.delayed()`, Ambassador-owned SWSGI types, keyed `FormParameters`, `JSONResponse(json:)`/Codable, shared reader decode, sync inits delegate, `MultiDictionary` dropped from `DataResponse`; README fixes | in progress | |
 
 ## Consumer follow-ups (envoy-ipad)
 

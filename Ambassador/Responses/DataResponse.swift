@@ -16,7 +16,8 @@ public struct DataResponse: WebApp {
     public let statusMessage: String
     /// Headers to response
     public let headers: [(String, String)]
-    /// Function for generating JSON response
+    /// Produces the body: called with the request environ and a `sendData` to call exactly once
+    /// with the whole payload
     public let handler: (_ environ: [String: Any], _ sendData: @escaping (Data) -> Void) -> Void
     /// The Content type to response
     public let contentType: String
@@ -42,17 +43,13 @@ public struct DataResponse: WebApp {
         headers: [(String, String)] = [],
         handler: ((_ environ: [String: Any]) -> Data)? = nil
     ) {
-        self.statusCode = statusCode
-        self.statusMessage = statusMessage
-        self.contentType = contentType
-        self.headers = headers
-        self.handler = { environ, sendData in
-            if let handler = handler {
-                let data = handler(environ)
-                sendData(data)
-            } else {
-                sendData(Data())
-            }
+        self.init(
+            statusCode: statusCode,
+            statusMessage: statusMessage,
+            contentType: contentType,
+            headers: headers
+        ) { environ, sendData in
+            sendData(handler?(environ) ?? Data())
         }
     }
 
