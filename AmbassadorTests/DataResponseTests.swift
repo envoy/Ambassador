@@ -8,7 +8,6 @@
 
 import XCTest
 
-import Embassy
 import Ambassador
 
 class DataResponseTests: XCTestCase {
@@ -40,12 +39,9 @@ class DataResponseTests: XCTestCase {
         )
 
         XCTAssertEqual(recorder.lastStatus, "201 created")
-        let headersDict = MultiDictionary<String, String, LowercaseKeyTransform>(
-            items: recorder.lastHeaders
-        )
-        XCTAssertEqual(headersDict["Content-Type"], "application/my-format")
-        XCTAssertEqual(Int(headersDict["Content-Length"] ?? "0"), "hello".count)
-        XCTAssertEqual(headersDict["X-Foo-Bar"], "header")
+        XCTAssertEqual(recorder.lastHeader("Content-Type"), "application/my-format")
+        XCTAssertEqual(Int(recorder.lastHeader("Content-Length") ?? "0"), "hello".count)
+        XCTAssertEqual(recorder.lastHeader("X-Foo-Bar"), "header")
 
         XCTAssertEqual(recorder.bodies.count, 2)
         XCTAssertEqual(recorder.bodies.first ?? Data(), Data("hello".utf8))
@@ -55,6 +51,19 @@ class DataResponseTests: XCTestCase {
         for (key, value) in environ {
             XCTAssertEqual(receivedEnviron?[key] as? String, value as? String)
         }
+    }
+
+    func testCallerHeadersAreNotDuplicated() {
+        let dataResponse = DataResponse(
+            headers: [("content-type", "text/plain"), ("CONTENT-LENGTH", "99")]
+        ) { _ in Data("hello".utf8) }
+
+        let recorder = ResponseRecorder()
+        dataResponse.app([:], startResponse: recorder.startResponse, sendBody: recorder.sendBody)
+
+        XCTAssertEqual(recorder.lastHeaders.map(\.0), ["content-type", "CONTENT-LENGTH"])
+        XCTAssertEqual(recorder.lastHeader("Content-Type"), "text/plain")
+        XCTAssertEqual(recorder.lastHeader("Content-Length"), "99")
     }
 
     func testDataResponseWithEmptyData() {

@@ -44,9 +44,10 @@ Last released version: `v4.0.5`.
 | C1 | Typealiases for the SWSGI callback signatures | Consolidation | No | done |
 | C2 | Sync inits delegate to async inits | Consolidation | No | proposed |
 | C3 | Shared decode helper for readers; readers become `enum`s | Consolidation | Minor | in progress |
-| C4 | `DelayResponse` schedules one flush instead of three timers | Consolidation | No | proposed |
+| C4 | `DelayResponse` schedules one flush instead of three timers | Consolidation | No | deferred |
 | C5 | Small cleanups (`SWGIWebApp` rename, doc fixes, IUO) | Consolidation | No (with deprecation) | partly done |
 | C6 | SwiftLint config is never loaded (`.swiftlint.yaml` vs `.swiftlint.yml`) | Consolidation | No | done |
+| C7 | `DataResponse` checks headers without `MultiDictionary` | Consolidation | No | in progress |
 | X1 | Make `WebApp` `Sendable` / add an `async` API | — | Yes | declined for now |
 
 ## Bugs
@@ -207,9 +208,8 @@ Last released version: `v4.0.5`.
   types. Verified in a scratch package that a module importing both Ambassador and Embassy still
   compiles with no ambiguity. (`Embassy.SWSGI` can't be written because Embassy's `enum Embassy`
   shadows the module name, so the types are spelled out.) `environ.swsgi.eventLoop` is internal
-  (it was unreleased; only `DelayResponse` uses it). Tests drop `import Embassy` except
-  `DataResponseTests`/`JSONResponseTests`, which use `MultiDictionary` to check headers. In the library, only `SWSGIEnvironment`,
-  `DataResponse`, and `DelayResponse` still `import Embassy`.
+  (it was unreleased; only `DelayResponse` uses it). Tests drop `import Embassy`. In the library,
+  only `SWSGIEnvironment` and `DelayResponse` still `import Embassy` (since C7).
 - **Keep in sync:** if Embassy changes these signatures, `SWSGI.swift` must follow, or
   `Router.app` stops matching `DefaultHTTPServer(app:)`.
 - **Status:** in progress
@@ -260,7 +260,38 @@ Last released version: `v4.0.5`.
 - **Proposal:** Buffer the wrapped app's output and flush it in one scheduled call after EOF.
   Delaying the whole wrapped app instead is simpler, but handlers reading the request body would
   start late; that is only safe if Embassy buffers input, which is unverified.
-- **Status:** proposed
+- **Findings (2026-09-23):**
+  - Where the timers come from: `DelayResponse.app` wraps `startResponse` and `sendBody` so every
+    call goes through its own `loop.call(withDelay:)`. `DataResponse.app` (and so `JSONResponse`)
+    makes three calls per response: `startResponse`, `sendBody(data)` if non-empty, and
+    `sendBody(Data())` for EOF. So each delayed response puts three entries on Embassy's timer heap.
+  - Ordering: Embassy's `SelectorEventLoop.call(withDelay:)` schedules at `.now() + delay` and
+    pushes onto a heap ordered only by deadline (`$0.0 < $1.0`), so equal deadlines have no
+    guaranteed order. In practice the deadlines always differ: each `schedule` takes a lock, pushes,
+    and calls `interruptSelector()` (a write syscall), microseconds apart, while the clock ticks every
+    ~42 ns on Apple silicon. envoy-ipad's heavy `DelayResponse` use shows no ordering problems.
+  - Cost: three heap entries and up to three loop wakeups instead of one per delayed response;
+    negligible at UI-test volumes.
+  - Fix trade-offs: buffering and flushing once after EOF changes timing for handlers that respond
+    asynchronously (the delay would count from EOF, not from each call); delaying the whole wrapped
+    app starts request-body reading late.
+  - Leaning: decline unless a test shows reordering.
+- **To test later:** drive a delayed `DataResponse`/`JSONResponse` through a real
+  `SelectorEventLoop` many times (and with a zero delay, the tightest case) and assert the recorded
+  order is always status → body → EOF; optionally force equal deadlines to confirm the heap can
+  reorder them.
+- **Status:** deferred — findings above; test before deciding
+
+### C7 — `DataResponse` checks headers without `MultiDictionary`
+- **Problem:** `DataResponse.app` built a `MultiDictionary<String, String, LowercaseKeyTransform>`
+  only to ask whether `Content-Type`/`Content-Length` were already set. That was the last
+  non-event-loop reason for `import Embassy` in the library, and the two tests that checked
+  headers imported Embassy for the same type.
+- **Implementation:** a file-private `contains(named:)` on `[(String, String)]` using
+  `caseInsensitiveCompare`; `ResponseRecorder.lastHeader(_:)` replaces it in tests. New test
+  `testCallerHeadersAreNotDuplicated` pins the case-insensitive behavior. Behavior unchanged.
+  The test target still depends on Embassy for the planned C4 event-loop test.
+- **Status:** in progress (PR 2)
 
 ### C5 — Small cleanups
 - Rename `SWGIWebApp` → `SWSGIWebApp`, keep the old name as a deprecated typealias (unused in envoy-ipad).
@@ -290,7 +321,7 @@ Last released version: `v4.0.5`.
 | PR | Items | Status | Link |
 |---|---|---|---|
 | 1 | B1, B2, B3, B5, P3, P2 — Router fixes, delay RNG fix, reader failure logging | in progress | |
-| 2 | A1, A2, A3, A4, A6, C3 — `environ.swsgi` accessors, environ reader overloads, `.delayed()`, Ambassador-owned SWSGI types, keyed `FormParameters`, `JSONResponse(json:)`/Codable, shared reader decode; README fixes | in progress | |
+| 2 | A1, A2, A3, A4, A6, C3, C7 — `environ.swsgi` accessors, environ reader overloads, `.delayed()`, Ambassador-owned SWSGI types, keyed `FormParameters`, `JSONResponse(json:)`/Codable, shared reader decode, `MultiDictionary` dropped from `DataResponse`; README fixes | in progress | |
 
 ## Consumer follow-ups (envoy-ipad)
 

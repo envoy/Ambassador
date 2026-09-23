@@ -18,6 +18,11 @@ final class ResponseRecorder: @unchecked Sendable {
     var lastStatus: String? { statuses.last }
     var lastHeaders: [(String, String)] { headers.last ?? [] }
 
+    /// The first value of the header `name` in the last response, compared case-insensitively
+    func lastHeader(_ name: String) -> String? {
+        lastHeaders.first { $0.0.caseInsensitiveCompare(name) == .orderedSame }?.1
+    }
+
     var startResponse: SWSGIStartResponse {
         { status, headers in
             self.statuses.append(status)

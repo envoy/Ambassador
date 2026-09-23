@@ -8,7 +8,6 @@
 
 import XCTest
 
-import Embassy
 import Ambassador
 
 class JSONResponseTests: XCTestCase {
@@ -31,10 +30,7 @@ class JSONResponseTests: XCTestCase {
         )
 
         XCTAssertEqual(recorder.lastStatus, "200 OK")
-        let headersDict = MultiDictionary<String, String, LowercaseKeyTransform>(
-            items: recorder.lastHeaders
-        )
-        XCTAssertEqual(headersDict["Content-Type"], "application/json")
+        XCTAssertEqual(recorder.lastHeader("Content-Type"), "application/json")
 
         XCTAssertEqual(recorder.bodies.count, 2)
         XCTAssertEqual(recorder.bodies.last?.count, 0)
