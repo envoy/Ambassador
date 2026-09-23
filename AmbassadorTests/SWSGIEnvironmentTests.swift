@@ -5,8 +5,7 @@
 
 import XCTest
 
-import Ambassador
-import Embassy
+@testable import Ambassador
 
 class SWSGIEnvironmentTests: XCTestCase {
     func testAccessors() {

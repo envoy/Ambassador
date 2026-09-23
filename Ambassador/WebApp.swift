@@ -8,8 +8,6 @@
 
 import Foundation
 
-import Embassy
-
 /// Web Application
 public protocol WebApp {
     func app(

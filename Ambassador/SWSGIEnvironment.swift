@@ -49,8 +49,9 @@ public struct SWSGIEnvironment {
         environ[SWSGIEnvironment.routerCapturesKey] as? [String] ?? []
     }
 
-    /// The event loop serving this request
-    public var eventLoop: EventLoop? {
+    /// The event loop serving this request. Internal so Embassy's `EventLoop` stays out of the
+    /// public API.
+    var eventLoop: EventLoop? {
         environ["embassy.event_loop"] as? EventLoop
     }
 

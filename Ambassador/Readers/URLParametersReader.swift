@@ -8,8 +8,6 @@
 
 import Foundation
 
-import Embassy
-
 public struct URLParametersReader {
     public enum LocalError: Error {
         case utf8EncodingError

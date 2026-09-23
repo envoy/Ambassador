@@ -8,8 +8,6 @@
 
 import Foundation
 
-import Embassy
-
 /// Router WebApp for routing requests to different WebApp
 open class Router: WebApp {
     private struct Route {

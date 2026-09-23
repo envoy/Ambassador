@@ -5,7 +5,7 @@
 
 import Foundation
 
-import Embassy
+import Ambassador
 
 /// Records what a `WebApp` sends through `startResponse`/`sendBody`. The SWSGI callbacks are
 /// `@Sendable`, so tests can't capture local `var`s; the tests drive apps synchronously on one

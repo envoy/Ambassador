@@ -8,8 +8,6 @@
 
 import Foundation
 
-import Embassy
-
 public struct JSONReader {
     /// Read all data into bytes array and parse it as JSON
     ///  - Parameter input: the SWSGI input to read from

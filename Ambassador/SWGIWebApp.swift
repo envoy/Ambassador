@@ -8,8 +8,6 @@
 
 import Foundation
 
-import Embassy
-
 /// SWGIWebApp is a WebApp for building web app with any SWSGI handler
 public struct SWGIWebApp: WebApp {
     private let handler: SWSGI

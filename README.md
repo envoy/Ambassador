@@ -57,6 +57,10 @@ Then you can visit [http://[::1]:8080/api/v2/users](http://[::1]:8080/api/v2/use
 ]
 ```
 
+## Ambassador and Embassy
+
+Ambassador declares the SWSGI types its API uses: `SWSGI`, `SWSGIStartResponse`, `SWSGISendBody`, and `SWSGIInput`. Writing routes, responses, readers, or your own `WebApp` only needs `import Ambassador`. These are the same types Embassy declares, so importing both modules is fine. You still need `import Embassy` to run the server (`SelectorEventLoop`, `DefaultHTTPServer`) as in the example above.
+
 ## Router
 
 `Router` allows you to map different path to different `WebApp`. Like what you saw in the previous example, to route path `/api/v2/users` to our response handler, you simply set the desired path with the `WebApp` as the value
@@ -105,7 +109,7 @@ router["/api/v2/users"] = JSONResponse(handler: { environ -> Any in
 })
 ```
 
-The available accessors are `input`, `requestMethod`, `pathInfo`, `queryString`, `contentType`, `routerCaptures`, `eventLoop`, and `header(_:)`. The raw dictionary is still available as `environ.swsgi.environ`.
+The available accessors are `input`, `requestMethod`, `pathInfo`, `queryString`, `contentType`, `routerCaptures`, and `header(_:)`. The raw dictionary is still available as `environ.swsgi.environ`.
 
 
 ## DataResponse

@@ -8,8 +8,6 @@
 
 import Foundation
 
-import Embassy
-
 /// A response app for responding JSON data
 public struct JSONResponse: WebApp {
     /// Underlying data response

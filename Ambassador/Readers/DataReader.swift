@@ -8,8 +8,6 @@
 
 import Foundation
 
-import Embassy
-
 public struct DataReader {
     /// Read all data into bytes array and pass it to handler
     ///  - Parameter input: the SWSGI input to read from
