@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct URLParametersReader {
+public enum URLParametersReader {
     public enum LocalError: Error {
         case utf8EncodingError
     }
@@ -61,26 +61,19 @@ public struct URLParametersReader {
         log: @escaping (String) -> Void,
         handler: @escaping (([(String, String)]) -> Void)
     ) {
-        DataReader.read(input) { data in
-            do {
+        DataReader.decode(
+            input,
+            reader: "URLParametersReader",
+            errorHandler: errorHandler,
+            log: log,
+            decode: { data in
                 guard let string = String(bytes: data, encoding: .utf8) else {
                     throw LocalError.utf8EncodingError
                 }
-                let parameters = URLParametersReader.parseURLParameters(string)
-                handler(parameters)
-            } catch {
-                if let errorHandler = errorHandler {
-                    errorHandler(error)
-                } else {
-                    DataReader.logReadFailure(
-                        reader: "URLParametersReader",
-                        byteCount: data.count,
-                        error: error,
-                        log: log
-                    )
-                }
-            }
-        }
+                return parseURLParameters(string)
+            },
+            handler: handler
+        )
     }
 
     /// Parse given string as URL parameters

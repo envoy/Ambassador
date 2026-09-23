@@ -161,6 +161,25 @@ router["/api/v2/users"] = JSONResponse() { _ -> Any in
 }
 ```
 
+When the payload doesn't depend on the request, pass it as `json:` and skip the closure:
+
+```Swift
+router["/api/v2/users"] = JSONResponse(json: [
+    ["id": "01", "name": "john"],
+    ["id": "02", "name": "tom"]
+])
+```
+
+To respond with an `Encodable` value, use `encoding:`. Pass `encoder:` when the output needs configuring, for example snake_case keys or ISO 8601 dates:
+
+```Swift
+let encoder = JSONEncoder()
+encoder.keyEncodingStrategy = .convertToSnakeCase
+router["/api/v2/users/1"] = JSONResponse(encoding: user, encoder: encoder)
+```
+
+Both `json:` and `encoding:` are evaluated on every request, like a handler's body, so they can read state that changes after the route is set.
+
 ## DelayResponse
 
 `DelayResponse` is a **decorator** response that delays given response for a while. In real-world, there will always be network latency, to simulte the latency, `DelayResponse` is very helpful. To delay a response, just do
@@ -248,7 +267,19 @@ router["/api/v2/users"] = JSONResponse() { environ, sendJSON in
 }
 ```
 
-If the body isn't valid JSON, `handler` isn't called and no response is sent. Pass `errorHandler` to handle that case, for example to fail the test. Without one, the failure is logged to standard error.
+To decode the body into a `Decodable` type, use `decode`. Pass `decoder:` when the input needs configuring:
+
+```Swift
+let decoder = JSONDecoder()
+decoder.keyDecodingStrategy = .convertFromSnakeCase
+router["/api/v2/login"] = JSONResponse() { environ, sendJSON in
+    JSONReader.decode(Login.self, from: environ, decoder: decoder) { login in
+        sendJSON(["token": login.code])
+    }
+}
+```
+
+If the body isn't valid JSON, or doesn't decode, `handler` isn't called and no response is sent. Pass `errorHandler` to handle that case, for example to fail the test. Without one, the failure is logged to standard error.
 
 ## URLParametersReader
 

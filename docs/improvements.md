@@ -37,13 +37,13 @@ Last released version: `v4.0.5`.
 | A1 | Typed environ accessors and environ-taking reader overloads | API | No (additive) | in progress |
 | A2 | Keyed result from `URLParametersReader` | API | No (additive) | in progress |
 | A3 | `.delayed(...)` modifier on `WebApp` | API | No (additive) | in progress |
-| A4 | `JSONResponse(json:)` / `Encodable` convenience | API | No (additive) | proposed |
+| A4 | `JSONResponse(json:)` / `Encodable` convenience | API | No (additive) | in progress |
 | A5 | Derive default status message from status code | API | Behavior | proposed |
 | A6 | Ambassador owns the SWSGI types in its public API | API | No (additive) | in progress |
 | A7 | Server wrapper so consumers don't drive Embassy directly | API | No (additive) | proposed |
 | C1 | Typealiases for the SWSGI callback signatures | Consolidation | No | done |
 | C2 | Sync inits delegate to async inits | Consolidation | No | proposed |
-| C3 | Shared decode helper for readers; readers become `enum`s | Consolidation | Minor | proposed |
+| C3 | Shared decode helper for readers; readers become `enum`s | Consolidation | Minor | in progress |
 | C4 | `DelayResponse` schedules one flush instead of three timers | Consolidation | No | proposed |
 | C5 | Small cleanups (`SWGIWebApp` rename, doc fixes, IUO) | Consolidation | No (with deprecation) | partly done |
 | C6 | SwiftLint config is never loaded (`.swiftlint.yaml` vs `.swiftlint.yml`) | Consolidation | No | done |
@@ -183,7 +183,17 @@ Last released version: `v4.0.5`.
   `handler:` initializers are ambiguous for a one-argument closure.
 - **Proposal:** `JSONResponse(json: [...])` for fixed payloads; optionally an `Encodable` overload
   using `JSONEncoder`.
-- **Status:** proposed
+- **Implementation:** `JSONResponse(json:)` and `JSONResponse(encoding:encoder:)`, plus the reader
+  side `JSONReader.decode(_:from:decoder:)` (input or environ) built on C3's helper. Encoder and
+  decoder are injectable for key/date strategies. Separate labels rather than more `handler:`
+  overloads: an `Encodable`-returning `handler:` would silently switch a closure returning
+  `["a": "b"]` from `JSONSerialization` (pretty-printed) to `JSONEncoder`.
+- **Timing decision:** `json:` and `encoding:` are `@autoclosure`s, evaluated per request like a
+  handler body. envoy-ipad's handlers read state (e.g. `self.deviceConfig`) that tests change after
+  registration, so evaluating once would serve stale data.
+- **Test:** `AmbassadorTests/JSONConvenienceTests.swift` (Swift Testing), including a check that
+  existing trailing-closure calls still pick the `handler:` initializers.
+- **Status:** in progress
 
 ### A6 — Ambassador owns the SWSGI types in its public API
 - **Problem:** Ambassador's public API names Embassy types (`SWSGIStartResponse`, `SWSGISendBody`
@@ -238,7 +248,11 @@ Last released version: `v4.0.5`.
 - **Problem:** `JSONReader` and `URLParametersReader` repeat "read all, decode, route the error".
 - **Proposal:** One private helper on `DataReader`. Make the static-only namespaces `enum`s so they
   can't be instantiated. (Breaks only code that writes `DataReader()`, which nothing does.)
-- **Status:** proposed
+- **Implementation:** internal `DataReader.decode(_:reader:errorHandler:log:decode:handler:)`;
+  `JSONReader.read`, `JSONReader.decode`, and `URLParametersReader.read` call it. Logging and
+  error routing unchanged (existing tests pass as is). envoy-ipad's `extension JSONReader` still
+  compiles against the `enum`.
+- **Status:** in progress
 
 ### C4 — `DelayResponse` schedules one flush instead of three timers
 - **Problem:** Headers, body, and EOF each get their own `call(withDelay:)`, relying on timer
@@ -276,7 +290,7 @@ Last released version: `v4.0.5`.
 | PR | Items | Status | Link |
 |---|---|---|---|
 | 1 | B1, B2, B3, B5, P3, P2 — Router fixes, delay RNG fix, reader failure logging | in progress | |
-| 2 | A1, A2, A3, A6 — `environ.swsgi` accessors, environ reader overloads, `.delayed()`, Ambassador-owned SWSGI types, keyed `FormParameters`; README fixes | in progress | |
+| 2 | A1, A2, A3, A4, A6, C3 — `environ.swsgi` accessors, environ reader overloads, `.delayed()`, Ambassador-owned SWSGI types, keyed `FormParameters`, `JSONResponse(json:)`/Codable, shared reader decode; README fixes | in progress | |
 
 ## Consumer follow-ups (envoy-ipad)
 
