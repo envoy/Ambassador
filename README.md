@@ -109,7 +109,7 @@ router["/api/v2/users"] = JSONResponse(handler: { environ -> Any in
 })
 ```
 
-The available accessors are `input`, `requestMethod`, `pathInfo`, `queryString`, `contentType`, `routerCaptures`, and `header(_:)`. The raw dictionary is still available as `environ.swsgi.environ`.
+The available accessors are `input`, `requestMethod`, `pathInfo`, `queryString`, `queryParameters`, `contentType`, `routerCaptures`, and `header(_:)`. `queryParameters` is the query string parsed as `FormParameters` (see below), so `environ.swsgi.queryParameters["page"]` reads `?page=2`. The raw dictionary is still available as `environ.swsgi.environ`.
 
 
 ## DataResponse
@@ -263,11 +263,23 @@ router["/api/v2/users"] = JSONResponse() { environ, sendJSON in
 }
 ```
 
+To look parameters up by key, use `readParameters` instead. It hands you `FormParameters`, where `params["key"]` is the first value for that key (case-sensitive), `params.values(for: "key")` returns every value, and iterating yields the `(key, value)` pairs in order.
+
+```Swift
+router["/api/v2/users"] = JSONResponse() { environ, sendJSON in
+    URLParametersReader.readParameters(environ) { params in
+        sendJSON(["name": params["name"] ?? ""])
+    }
+}
+```
+
 You can also use `URLParametersReader.parseURLParameters` to parse the URL encoded parameter string if you want. Just do it like
 
 ```Swift
 let params = URLParametersReader.parseURLParameters("foo=bar&eggs=spam")
 ```
+
+or `FormParameters(parsing: "foo=bar&eggs=spam")` for the keyed form.
 
 ## Install
 

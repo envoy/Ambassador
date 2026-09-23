@@ -35,7 +35,7 @@ Last released version: `v4.0.5`.
 | P2 | Body-parse failures hang until client timeout | Speed | No | in progress |
 | P3 | Router recompiles every regex on every request | Speed | No | in progress |
 | A1 | Typed environ accessors and environ-taking reader overloads | API | No (additive) | in progress |
-| A2 | Keyed result from `URLParametersReader` | API | No (additive) | proposed |
+| A2 | Keyed result from `URLParametersReader` | API | No (additive) | in progress |
 | A3 | `.delayed(...)` modifier on `WebApp` | API | No (additive) | in progress |
 | A4 | `JSONResponse(json:)` / `Encodable` convenience | API | No (additive) | proposed |
 | A5 | Derive default status message from status code | API | Behavior | proposed |
@@ -157,7 +157,17 @@ Last released version: `v4.0.5`.
 ### A2 — Keyed result from `URLParametersReader`
 - **Evidence:** `MultiDictionary<String, String, NoOpKeyTransform<String>>(items: params)` ×9.
 - **Proposal:** An overload or companion that hands back a keyed lookup directly.
-- **Status:** proposed
+- **Naming:** `FormParameters`, not `URLParameters`: the reader parses the request body, not the
+  URL; the format is the form encoding shared by bodies and query strings.
+- **Implementation:** `FormParameters` (`Ambassador/Readers/FormParameters.swift`): ordered pairs,
+  `params["key"]` (first value, case-sensitive, like the `MultiDictionary`/`NoOpKeyTransform`
+  envoy-ipad uses), `values(for:)`, iterable as pairs, `init(parsing:)` over the unchanged
+  `parseURLParameters` (B4 still declined). `URLParametersReader.readParameters(environ)` hands it
+  to the handler; a `read` overload differing only in the handler's parameter type would make
+  existing `{ params in ... }` calls ambiguous, hence the new name. `environ.swsgi.queryParameters`
+  parses `QUERY_STRING` (empty when absent or empty), replacing envoy-ipad's
+  `TestHelper.parseQueryParameters`.
+- **Status:** in progress
 
 ### A3 — `.delayed(...)` modifier on `WebApp`
 - **Evidence:** envoy-ipad's `DelayResponse+minMax.swift` adds its own factories.
@@ -266,7 +276,7 @@ Last released version: `v4.0.5`.
 | PR | Items | Status | Link |
 |---|---|---|---|
 | 1 | B1, B2, B3, B5, P3, P2 — Router fixes, delay RNG fix, reader failure logging | in progress | |
-| 2 | A1, A3, A6 — `environ.swsgi` accessors, environ reader overloads, `.delayed()`, Ambassador-owned SWSGI types; README fixes | in progress | |
+| 2 | A1, A2, A3, A6 — `environ.swsgi` accessors, environ reader overloads, `.delayed()`, Ambassador-owned SWSGI types, keyed `FormParameters`; README fixes | in progress | |
 
 ## Consumer follow-ups (envoy-ipad)
 
@@ -287,3 +297,7 @@ Changes to make in envoy-ipad once the corresponding items ship:
 - **A6:** once A1's overloads are adopted, files that imported Embassy only for `SWSGIInput`
   (or `SWSGIStartResponse`/`SWSGISendBody`) can drop `import Embassy`. Files using
   `MultiDictionary` (A2) or the server/event loop (A7) still need it.
+- **A2:** replace `MultiDictionary<String, String, NoOpKeyTransform<String>>(items: params)` (×11)
+  with `URLParametersReader.readParameters(environ) { params in ... params["key"] }`, and
+  `TestHelper.parseQueryParameters(URL:)` (×2) with `environ.swsgi.queryParameters`, or
+  `FormParameters(parsing:)` on the text after `?` when only a URL string is at hand. Optional.

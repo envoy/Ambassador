@@ -39,6 +39,12 @@ public struct SWSGIEnvironment {
         environ["QUERY_STRING"] as? String
     }
 
+    /// The query string parsed as URL parameters; empty when there is no query string
+    public var queryParameters: FormParameters {
+        guard let queryString, !queryString.isEmpty else { return FormParameters([]) }
+        return FormParameters(parsing: queryString)
+    }
+
     /// Value of the `Content-Type` request header
     public var contentType: String? {
         environ["CONTENT_TYPE"] as? String
