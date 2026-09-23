@@ -46,7 +46,8 @@ open class Router: WebApp {
         startResponse: @escaping SWSGIStartResponse,
         sendBody: @escaping SWSGISendBody
     ) {
-        let path = environ["PATH_INFO"] as! String
+        // every environ from Embassy's server has PATH_INFO; its absence is a broken server, not a 404
+        let path = environ.swsgi.pathInfo!
 
         if let (webApp, captures) = matchRoute(to: path) {
             var environ = environ

@@ -10,9 +10,14 @@ import Foundation
 
 /// A response app for responding JSON data
 public struct JSONResponse: WebApp {
-    /// Underlying data response
+    /// Underlying data response; every initializer ends up here
     let dataResponse: DataResponse
 
+    private init(dataResponse: DataResponse) {
+        self.dataResponse = dataResponse
+    }
+
+    /// The one place JSON is serialized
     public init(
         statusCode: Int = 200,
         statusMessage: String = "OK",
@@ -21,19 +26,19 @@ public struct JSONResponse: WebApp {
         headers: [(String, String)] = [],
         handler: @escaping (_ environ: [String: Any], _ sendJSON: @escaping (Any) -> Void) -> Void
     ) {
-        dataResponse = DataResponse(
+        self.init(dataResponse: DataResponse(
             statusCode: statusCode,
             statusMessage: statusMessage,
             contentType: contentType,
             headers: headers
         ) { environ, sendData in
             handler(environ) { json in
-                let data = try! JSONSerialization.data(withJSONObject: json, options: jsonWritingOptions)
-                sendData(data)
+                sendData(try! JSONSerialization.data(withJSONObject: json, options: jsonWritingOptions))
             }
-        }
+        })
     }
 
+    /// With no `handler`, the body is empty (nothing is serialized)
     public init(
         statusCode: Int = 200,
         statusMessage: String = "OK",
@@ -42,21 +47,23 @@ public struct JSONResponse: WebApp {
         headers: [(String, String)] = [],
         handler: ((_ environ: [String: Any]) -> Any)? = nil
     ) {
-        dataResponse = DataResponse(
+        guard let handler else {
+            self.init(dataResponse: DataResponse(
+                statusCode: statusCode,
+                statusMessage: statusMessage,
+                contentType: contentType,
+                headers: headers
+            ))
+            return
+        }
+        self.init(
             statusCode: statusCode,
             statusMessage: statusMessage,
             contentType: contentType,
-            headers: headers
-        ) { environ, sendData in
-            let data: Data
-            if let handler = handler {
-                let json = handler(environ)
-                data = try! JSONSerialization.data(withJSONObject: json, options: jsonWritingOptions)
-            } else {
-                data = Data()
-            }
-            sendData(data)
-        }
+            jsonWritingOptions: jsonWritingOptions,
+            headers: headers,
+            handler: { environ, sendJSON in sendJSON(handler(environ)) }
+        )
     }
 
     /// Respond with `json`, serialized with `JSONSerialization`. `json` is evaluated on every
@@ -89,14 +96,14 @@ public struct JSONResponse: WebApp {
         encoding value: @autoclosure @escaping () -> Value,
         encoder: JSONEncoder = JSONEncoder()
     ) {
-        dataResponse = DataResponse(
+        self.init(dataResponse: DataResponse(
             statusCode: statusCode,
             statusMessage: statusMessage,
             contentType: contentType,
             headers: headers
         ) { _ in
             try! encoder.encode(value())
-        }
+        })
     }
 
     public func app(

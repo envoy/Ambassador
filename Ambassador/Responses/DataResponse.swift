@@ -8,9 +8,6 @@
 
 import Foundation
 
-import Embassy
-
-// TODO: maybe we should move these stuff to Embassy instead
 /// Data response responses data from given handler immediately to the client
 public struct DataResponse: WebApp {
     /// The status code to response
@@ -19,7 +16,8 @@ public struct DataResponse: WebApp {
     public let statusMessage: String
     /// Headers to response
     public let headers: [(String, String)]
-    /// Function for generating JSON response
+    /// Produces the body: called with the request environ and a `sendData` to call exactly once
+    /// with the whole payload
     public let handler: (_ environ: [String: Any], _ sendData: @escaping (Data) -> Void) -> Void
     /// The Content type to response
     public let contentType: String
@@ -45,17 +43,13 @@ public struct DataResponse: WebApp {
         headers: [(String, String)] = [],
         handler: ((_ environ: [String: Any]) -> Data)? = nil
     ) {
-        self.statusCode = statusCode
-        self.statusMessage = statusMessage
-        self.contentType = contentType
-        self.headers = headers
-        self.handler = { environ, sendData in
-            if let handler = handler {
-                let data = handler(environ)
-                sendData(data)
-            } else {
-                sendData(Data())
-            }
+        self.init(
+            statusCode: statusCode,
+            statusMessage: statusMessage,
+            contentType: contentType,
+            headers: headers
+        ) { environ, sendData in
+            sendData(handler?(environ) ?? Data())
         }
     }
 
@@ -65,12 +59,12 @@ public struct DataResponse: WebApp {
         sendBody: @escaping SWSGISendBody
     ) {
         handler(environ) { data in
+            // add the defaults only when the caller didn't supply them (header names are case-insensitive)
             var headers = self.headers
-            let headerDict = MultiDictionary<String, String, LowercaseKeyTransform>(items: headers)
-            if headerDict["Content-Type"] == nil {
+            if !headers.contains(named: "Content-Type") {
                 headers.append(("Content-Type", self.contentType))
             }
-            if headerDict["Content-Length"] == nil {
+            if !headers.contains(named: "Content-Length") {
                 headers.append(("Content-Length", String(data.count)))
             }
 
@@ -80,5 +74,12 @@ public struct DataResponse: WebApp {
             }
             sendBody(Data())
         }
+    }
+}
+
+extension [(String, String)] {
+    /// Whether a header called `name` is present, compared case-insensitively
+    func contains(named name: String) -> Bool {
+        contains { $0.0.caseInsensitiveCompare(name) == .orderedSame }
     }
 }
