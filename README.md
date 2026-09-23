@@ -312,6 +312,12 @@ let params = URLParametersReader.parseURLParameters("foo=bar&eggs=spam")
 
 or `FormParameters(parsing: "foo=bar&eggs=spam")` for the keyed form.
 
+Two things worth knowing about the parsing:
+
+- `+` is **not** decoded to a space. `"a+b=c+d"` parses as `("a+b", "c+d")`. If your client
+  form-encodes spaces as `+` rather than `%20`, decode them yourself.
+- An empty string parses as no parameters at all (`[]`).
+
 ## Install
 
 ### CocoaPods
