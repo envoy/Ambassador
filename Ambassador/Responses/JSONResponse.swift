@@ -59,6 +59,46 @@ public struct JSONResponse: WebApp {
         }
     }
 
+    /// Respond with `json`, serialized with `JSONSerialization`. `json` is evaluated on every
+    /// request, like a handler's body, so it can read state that changes after the route is set.
+    public init(
+        statusCode: Int = 200,
+        statusMessage: String = "OK",
+        contentType: String = "application/json",
+        jsonWritingOptions: JSONSerialization.WritingOptions = .prettyPrinted,
+        headers: [(String, String)] = [],
+        json: @autoclosure @escaping () -> Any
+    ) {
+        self.init(
+            statusCode: statusCode,
+            statusMessage: statusMessage,
+            contentType: contentType,
+            jsonWritingOptions: jsonWritingOptions,
+            headers: headers,
+            handler: { _ in json() }
+        )
+    }
+
+    /// Respond with `value`, encoded with `encoder`. `value` is evaluated on every request, like a
+    /// handler's body, so it can read state that changes after the route is set.
+    public init<Value: Encodable>(
+        statusCode: Int = 200,
+        statusMessage: String = "OK",
+        contentType: String = "application/json",
+        headers: [(String, String)] = [],
+        encoding value: @autoclosure @escaping () -> Value,
+        encoder: JSONEncoder = JSONEncoder()
+    ) {
+        dataResponse = DataResponse(
+            statusCode: statusCode,
+            statusMessage: statusMessage,
+            contentType: contentType,
+            headers: headers
+        ) { _ in
+            try! encoder.encode(value())
+        }
+    }
+
     public func app(
         _ environ: [String: Any],
         startResponse: @escaping SWSGIStartResponse,

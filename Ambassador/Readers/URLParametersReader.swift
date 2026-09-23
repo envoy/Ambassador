@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct URLParametersReader {
+public enum URLParametersReader {
     public enum LocalError: Error {
         case utf8EncodingError
     }
@@ -41,32 +41,39 @@ public struct URLParametersReader {
         read(environ.swsgi.input, errorHandler: errorHandler, handler: handler)
     }
 
+    /// Read the request body from `environ["swsgi.input"]` and parse it as URL parameters with
+    /// lookup by key
+    ///  - Parameter environ: the SWSGI environ of the request
+    ///  - Parameter errorHandler: the handler to be called when failed to read URL parameters. When
+    ///                            `nil`, the failure is logged to standard error.
+    ///  - Parameter handler: the handler to be called with the parsed parameters
+    public static func readParameters(
+        _ environ: [String: Any],
+        errorHandler: ((Error) -> Void)? = nil,
+        handler: @escaping ((FormParameters) -> Void)
+    ) {
+        read(environ, errorHandler: errorHandler) { handler(FormParameters($0)) }
+    }
+
     static func read(
         _ input: SWSGIInput,
         errorHandler: ((Error) -> Void)?,
         log: @escaping (String) -> Void,
         handler: @escaping (([(String, String)]) -> Void)
     ) {
-        DataReader.read(input) { data in
-            do {
+        DataReader.decode(
+            input,
+            reader: "URLParametersReader",
+            errorHandler: errorHandler,
+            log: log,
+            decode: { data in
                 guard let string = String(bytes: data, encoding: .utf8) else {
                     throw LocalError.utf8EncodingError
                 }
-                let parameters = URLParametersReader.parseURLParameters(string)
-                handler(parameters)
-            } catch {
-                if let errorHandler = errorHandler {
-                    errorHandler(error)
-                } else {
-                    DataReader.logReadFailure(
-                        reader: "URLParametersReader",
-                        byteCount: data.count,
-                        error: error,
-                        log: log
-                    )
-                }
-            }
-        }
+                return parseURLParameters(string)
+            },
+            handler: handler
+        )
     }
 
     /// Parse given string as URL parameters

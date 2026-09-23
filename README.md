@@ -109,7 +109,7 @@ router["/api/v2/users"] = JSONResponse(handler: { environ -> Any in
 })
 ```
 
-The available accessors are `input`, `requestMethod`, `pathInfo`, `queryString`, `contentType`, `routerCaptures`, and `header(_:)`. The raw dictionary is still available as `environ.swsgi.environ`.
+The available accessors are `input`, `requestMethod`, `pathInfo`, `queryString`, `queryParameters`, `contentType`, `routerCaptures`, and `header(_:)`. `queryParameters` is the query string parsed as `FormParameters` (see below), so `environ.swsgi.queryParameters["page"]` reads `?page=2`. The raw dictionary is still available as `environ.swsgi.environ`.
 
 
 ## DataResponse
@@ -160,6 +160,25 @@ router["/api/v2/users"] = JSONResponse() { _ -> Any in
     ]
 }
 ```
+
+When the payload doesn't depend on the request, pass it as `json:` and skip the closure:
+
+```Swift
+router["/api/v2/users"] = JSONResponse(json: [
+    ["id": "01", "name": "john"],
+    ["id": "02", "name": "tom"]
+])
+```
+
+To respond with an `Encodable` value, use `encoding:`. Pass `encoder:` when the output needs configuring, for example snake_case keys or ISO 8601 dates:
+
+```Swift
+let encoder = JSONEncoder()
+encoder.keyEncodingStrategy = .convertToSnakeCase
+router["/api/v2/users/1"] = JSONResponse(encoding: user, encoder: encoder)
+```
+
+Both `json:` and `encoding:` are evaluated on every request, like a handler's body, so they can read state that changes after the route is set.
 
 ## DelayResponse
 
@@ -248,7 +267,19 @@ router["/api/v2/users"] = JSONResponse() { environ, sendJSON in
 }
 ```
 
-If the body isn't valid JSON, `handler` isn't called and no response is sent. Pass `errorHandler` to handle that case, for example to fail the test. Without one, the failure is logged to standard error.
+To decode the body into a `Decodable` type, use `decode`. Pass `decoder:` when the input needs configuring:
+
+```Swift
+let decoder = JSONDecoder()
+decoder.keyDecodingStrategy = .convertFromSnakeCase
+router["/api/v2/login"] = JSONResponse() { environ, sendJSON in
+    JSONReader.decode(Login.self, from: environ, decoder: decoder) { login in
+        sendJSON(["token": login.code])
+    }
+}
+```
+
+If the body isn't valid JSON, or doesn't decode, `handler` isn't called and no response is sent. Pass `errorHandler` to handle that case, for example to fail the test. Without one, the failure is logged to standard error.
 
 ## URLParametersReader
 
@@ -263,11 +294,23 @@ router["/api/v2/users"] = JSONResponse() { environ, sendJSON in
 }
 ```
 
+To look parameters up by key, use `readParameters` instead. It hands you `FormParameters`, where `params["key"]` is the first value for that key (case-sensitive), `params.values(for: "key")` returns every value, and iterating yields the `(key, value)` pairs in order.
+
+```Swift
+router["/api/v2/users"] = JSONResponse() { environ, sendJSON in
+    URLParametersReader.readParameters(environ) { params in
+        sendJSON(["name": params["name"] ?? ""])
+    }
+}
+```
+
 You can also use `URLParametersReader.parseURLParameters` to parse the URL encoded parameter string if you want. Just do it like
 
 ```Swift
 let params = URLParametersReader.parseURLParameters("foo=bar&eggs=spam")
 ```
+
+or `FormParameters(parsing: "foo=bar&eggs=spam")` for the keyed form.
 
 ## Install
 
