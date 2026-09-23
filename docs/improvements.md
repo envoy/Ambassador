@@ -316,8 +316,8 @@ Last released version: `v4.0.5`.
 - Fix the `DataResponse.handler` doc comment ("generating JSON response"). (done)
 - Replace `var delayTime: TimeInterval!` with a `let` built from a `switch` expression. (done)
 - `Router.app` reads `environ["PATH_INFO"] as! String`; use `environ.swsgi.pathInfo` like the
-  rest of the library (keep the trap: a missing `PATH_INFO` is a broken server, not a 404).
-- **Status:** partly done — IUO and doc comment done; rename and `pathInfo` still proposed
+  rest of the library (keep the trap: a missing `PATH_INFO` is a broken server, not a 404). (done)
+- **Status:** partly done — IUO, doc comment, and `pathInfo` done; only the `SWGIWebApp` rename is left
 
 ### C6 — SwiftLint config is never loaded
 - **Problem:** SwiftLint auto-discovers only `.swiftlint.yml`. The repo's file is `.swiftlint.yaml`,
