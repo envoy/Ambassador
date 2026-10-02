@@ -20,6 +20,7 @@ xcuserdata/
 ## Other
 *.moved-aside
 *.xcuserstate
+.derived-data-log-*
 
 ## Obj-C/Swift specific
 *.hmap
@@ -67,3 +68,4 @@ fastlane/test_output
 
 xcuserdata
 Carthage
+.swiftpm/xcode/package.xcworkspace/contents.xcworkspacedata
